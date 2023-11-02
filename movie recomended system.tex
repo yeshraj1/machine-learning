@@ -1,0 +1,1945 @@
+\documentclass[11pt]{article}
+
+    \usepackage[breakable]{tcolorbox}
+    \usepackage{parskip} % Stop auto-indenting (to mimic markdown behaviour)
+    
+
+    % Basic figure setup, for now with no caption control since it's done
+    % automatically by Pandoc (which extracts ![](path) syntax from Markdown).
+    \usepackage{graphicx}
+    % Maintain compatibility with old templates. Remove in nbconvert 6.0
+    \let\Oldincludegraphics\includegraphics
+    % Ensure that by default, figures have no caption (until we provide a
+    % proper Figure object with a Caption API and a way to capture that
+    % in the conversion process - todo).
+    \usepackage{caption}
+    \DeclareCaptionFormat{nocaption}{}
+    \captionsetup{format=nocaption,aboveskip=0pt,belowskip=0pt}
+
+    \usepackage{float}
+    \floatplacement{figure}{H} % forces figures to be placed at the correct location
+    \usepackage{xcolor} % Allow colors to be defined
+    \usepackage{enumerate} % Needed for markdown enumerations to work
+    \usepackage{geometry} % Used to adjust the document margins
+    \usepackage{amsmath} % Equations
+    \usepackage{amssymb} % Equations
+    \usepackage{textcomp} % defines textquotesingle
+    % Hack from http://tex.stackexchange.com/a/47451/13684:
+    \AtBeginDocument{%
+        \def\PYZsq{\textquotesingle}% Upright quotes in Pygmentized code
+    }
+    \usepackage{upquote} % Upright quotes for verbatim code
+    \usepackage{eurosym} % defines \euro
+
+    \usepackage{iftex}
+    \ifPDFTeX
+        \usepackage[T1]{fontenc}
+        \IfFileExists{alphabeta.sty}{
+              \usepackage{alphabeta}
+          }{
+              \usepackage[mathletters]{ucs}
+              \usepackage[utf8x]{inputenc}
+          }
+    \else
+        \usepackage{fontspec}
+        \usepackage{unicode-math}
+    \fi
+
+    \usepackage{fancyvrb} % verbatim replacement that allows latex
+    \usepackage{grffile} % extends the file name processing of package graphics
+                         % to support a larger range
+    \makeatletter % fix for old versions of grffile with XeLaTeX
+    \@ifpackagelater{grffile}{2019/11/01}
+    {
+      % Do nothing on new versions
+    }
+    {
+      \def\Gread@@xetex#1{%
+        \IfFileExists{"\Gin@base".bb}%
+        {\Gread@eps{\Gin@base.bb}}%
+        {\Gread@@xetex@aux#1}%
+      }
+    }
+    \makeatother
+    \usepackage[Export]{adjustbox} % Used to constrain images to a maximum size
+    \adjustboxset{max size={0.9\linewidth}{0.9\paperheight}}
+
+    % The hyperref package gives us a pdf with properly built
+    % internal navigation ('pdf bookmarks' for the table of contents,
+    % internal cross-reference links, web links for URLs, etc.)
+    \usepackage{hyperref}
+    % The default LaTeX title has an obnoxious amount of whitespace. By default,
+    % titling removes some of it. It also provides customization options.
+    \usepackage{titling}
+    \usepackage{longtable} % longtable support required by pandoc >1.10
+    \usepackage{booktabs}  % table support for pandoc > 1.12.2
+    \usepackage{array}     % table support for pandoc >= 2.11.3
+    \usepackage{calc}      % table minipage width calculation for pandoc >= 2.11.1
+    \usepackage[inline]{enumitem} % IRkernel/repr support (it uses the enumerate* environment)
+    \usepackage[normalem]{ulem} % ulem is needed to support strikethroughs (\sout)
+                                % normalem makes italics be italics, not underlines
+    \usepackage{mathrsfs}
+    
+
+    
+    % Colors for the hyperref package
+    \definecolor{urlcolor}{rgb}{0,.145,.698}
+    \definecolor{linkcolor}{rgb}{.71,0.21,0.01}
+    \definecolor{citecolor}{rgb}{.12,.54,.11}
+
+    % ANSI colors
+    \definecolor{ansi-black}{HTML}{3E424D}
+    \definecolor{ansi-black-intense}{HTML}{282C36}
+    \definecolor{ansi-red}{HTML}{E75C58}
+    \definecolor{ansi-red-intense}{HTML}{B22B31}
+    \definecolor{ansi-green}{HTML}{00A250}
+    \definecolor{ansi-green-intense}{HTML}{007427}
+    \definecolor{ansi-yellow}{HTML}{DDB62B}
+    \definecolor{ansi-yellow-intense}{HTML}{B27D12}
+    \definecolor{ansi-blue}{HTML}{208FFB}
+    \definecolor{ansi-blue-intense}{HTML}{0065CA}
+    \definecolor{ansi-magenta}{HTML}{D160C4}
+    \definecolor{ansi-magenta-intense}{HTML}{A03196}
+    \definecolor{ansi-cyan}{HTML}{60C6C8}
+    \definecolor{ansi-cyan-intense}{HTML}{258F8F}
+    \definecolor{ansi-white}{HTML}{C5C1B4}
+    \definecolor{ansi-white-intense}{HTML}{A1A6B2}
+    \definecolor{ansi-default-inverse-fg}{HTML}{FFFFFF}
+    \definecolor{ansi-default-inverse-bg}{HTML}{000000}
+
+    % common color for the border for error outputs.
+    \definecolor{outerrorbackground}{HTML}{FFDFDF}
+
+    % commands and environments needed by pandoc snippets
+    % extracted from the output of `pandoc -s`
+    \providecommand{\tightlist}{%
+      \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+    \DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+    % Add ',fontsize=\small' for more characters per line
+    \newenvironment{Shaded}{}{}
+    \newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{\textbf{{#1}}}}
+    \newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.56,0.13,0.00}{{#1}}}
+    \newcommand{\DecValTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\FloatTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\CharTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\StringTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\CommentTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textit{{#1}}}}
+    \newcommand{\OtherTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{{#1}}}
+    \newcommand{\AlertTok}[1]{\textcolor[rgb]{1.00,0.00,0.00}{\textbf{{#1}}}}
+    \newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.02,0.16,0.49}{{#1}}}
+    \newcommand{\RegionMarkerTok}[1]{{#1}}
+    \newcommand{\ErrorTok}[1]{\textcolor[rgb]{1.00,0.00,0.00}{\textbf{{#1}}}}
+    \newcommand{\NormalTok}[1]{{#1}}
+
+    % Additional commands for more recent versions of Pandoc
+    \newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.53,0.00,0.00}{{#1}}}
+    \newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.73,0.40,0.53}{{#1}}}
+    \newcommand{\ImportTok}[1]{{#1}}
+    \newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.73,0.13,0.13}{\textit{{#1}}}}
+    \newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    \newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    \newcommand{\VariableTok}[1]{\textcolor[rgb]{0.10,0.09,0.49}{{#1}}}
+    \newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{\textbf{{#1}}}}
+    \newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.40,0.40,0.40}{{#1}}}
+    \newcommand{\BuiltInTok}[1]{{#1}}
+    \newcommand{\ExtensionTok}[1]{{#1}}
+    \newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.74,0.48,0.00}{{#1}}}
+    \newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.49,0.56,0.16}{{#1}}}
+    \newcommand{\InformationTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    \newcommand{\WarningTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+
+
+    % Define a nice break command that doesn't care if a line doesn't already
+    % exist.
+    \def\br{\hspace*{\fill} \\* }
+    % Math Jax compatibility definitions
+    \def\gt{>}
+    \def\lt{<}
+    \let\Oldtex\TeX
+    \let\Oldlatex\LaTeX
+    \renewcommand{\TeX}{\textrm{\Oldtex}}
+    \renewcommand{\LaTeX}{\textrm{\Oldlatex}}
+    % Document parameters
+    % Document title
+    \title{movie recomended system}
+    
+    
+    
+    
+    
+% Pygments definitions
+\makeatletter
+\def\PY@reset{\let\PY@it=\relax \let\PY@bf=\relax%
+    \let\PY@ul=\relax \let\PY@tc=\relax%
+    \let\PY@bc=\relax \let\PY@ff=\relax}
+\def\PY@tok#1{\csname PY@tok@#1\endcsname}
+\def\PY@toks#1+{\ifx\relax#1\empty\else%
+    \PY@tok{#1}\expandafter\PY@toks\fi}
+\def\PY@do#1{\PY@bc{\PY@tc{\PY@ul{%
+    \PY@it{\PY@bf{\PY@ff{#1}}}}}}}
+\def\PY#1#2{\PY@reset\PY@toks#1+\relax+\PY@do{#2}}
+
+\@namedef{PY@tok@w}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.73,0.73}{##1}}}
+\@namedef{PY@tok@c}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.24,0.48,0.48}{##1}}}
+\@namedef{PY@tok@cp}{\def\PY@tc##1{\textcolor[rgb]{0.61,0.40,0.00}{##1}}}
+\@namedef{PY@tok@k}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kp}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kt}{\def\PY@tc##1{\textcolor[rgb]{0.69,0.00,0.25}{##1}}}
+\@namedef{PY@tok@o}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@ow}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.67,0.13,1.00}{##1}}}
+\@namedef{PY@tok@nb}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@nf}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\@namedef{PY@tok@nc}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\@namedef{PY@tok@nn}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\@namedef{PY@tok@ne}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.80,0.25,0.22}{##1}}}
+\@namedef{PY@tok@nv}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@no}{\def\PY@tc##1{\textcolor[rgb]{0.53,0.00,0.00}{##1}}}
+\@namedef{PY@tok@nl}{\def\PY@tc##1{\textcolor[rgb]{0.46,0.46,0.00}{##1}}}
+\@namedef{PY@tok@ni}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.44,0.44,0.44}{##1}}}
+\@namedef{PY@tok@na}{\def\PY@tc##1{\textcolor[rgb]{0.41,0.47,0.13}{##1}}}
+\@namedef{PY@tok@nt}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@nd}{\def\PY@tc##1{\textcolor[rgb]{0.67,0.13,1.00}{##1}}}
+\@namedef{PY@tok@s}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@sd}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@si}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.64,0.35,0.47}{##1}}}
+\@namedef{PY@tok@se}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.67,0.36,0.12}{##1}}}
+\@namedef{PY@tok@sr}{\def\PY@tc##1{\textcolor[rgb]{0.64,0.35,0.47}{##1}}}
+\@namedef{PY@tok@ss}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@sx}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@m}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@gh}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,0.50}{##1}}}
+\@namedef{PY@tok@gu}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.50,0.00,0.50}{##1}}}
+\@namedef{PY@tok@gd}{\def\PY@tc##1{\textcolor[rgb]{0.63,0.00,0.00}{##1}}}
+\@namedef{PY@tok@gi}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.52,0.00}{##1}}}
+\@namedef{PY@tok@gr}{\def\PY@tc##1{\textcolor[rgb]{0.89,0.00,0.00}{##1}}}
+\@namedef{PY@tok@ge}{\let\PY@it=\textit}
+\@namedef{PY@tok@gs}{\let\PY@bf=\textbf}
+\@namedef{PY@tok@gp}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,0.50}{##1}}}
+\@namedef{PY@tok@go}{\def\PY@tc##1{\textcolor[rgb]{0.44,0.44,0.44}{##1}}}
+\@namedef{PY@tok@gt}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.27,0.87}{##1}}}
+\@namedef{PY@tok@err}{\def\PY@bc##1{{\setlength{\fboxsep}{\string -\fboxrule}\fcolorbox[rgb]{1.00,0.00,0.00}{1,1,1}{\strut ##1}}}}
+\@namedef{PY@tok@kc}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kd}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kn}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kr}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@bp}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@fm}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\@namedef{PY@tok@vc}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@vg}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@vi}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@vm}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@sa}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@sb}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@sc}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@dl}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@s2}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@sh}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@s1}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@mb}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@mf}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@mh}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@mi}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@il}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@mo}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@ch}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.24,0.48,0.48}{##1}}}
+\@namedef{PY@tok@cm}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.24,0.48,0.48}{##1}}}
+\@namedef{PY@tok@cpf}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.24,0.48,0.48}{##1}}}
+\@namedef{PY@tok@c1}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.24,0.48,0.48}{##1}}}
+\@namedef{PY@tok@cs}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.24,0.48,0.48}{##1}}}
+
+\def\PYZbs{\char`\\}
+\def\PYZus{\char`\_}
+\def\PYZob{\char`\{}
+\def\PYZcb{\char`\}}
+\def\PYZca{\char`\^}
+\def\PYZam{\char`\&}
+\def\PYZlt{\char`\<}
+\def\PYZgt{\char`\>}
+\def\PYZsh{\char`\#}
+\def\PYZpc{\char`\%}
+\def\PYZdl{\char`\$}
+\def\PYZhy{\char`\-}
+\def\PYZsq{\char`\'}
+\def\PYZdq{\char`\"}
+\def\PYZti{\char`\~}
+% for compatibility with earlier versions
+\def\PYZat{@}
+\def\PYZlb{[}
+\def\PYZrb{]}
+\makeatother
+
+
+    % For linebreaks inside Verbatim environment from package fancyvrb.
+    \makeatletter
+        \newbox\Wrappedcontinuationbox
+        \newbox\Wrappedvisiblespacebox
+        \newcommand*\Wrappedvisiblespace {\textcolor{red}{\textvisiblespace}}
+        \newcommand*\Wrappedcontinuationsymbol {\textcolor{red}{\llap{\tiny$\m@th\hookrightarrow$}}}
+        \newcommand*\Wrappedcontinuationindent {3ex }
+        \newcommand*\Wrappedafterbreak {\kern\Wrappedcontinuationindent\copy\Wrappedcontinuationbox}
+        % Take advantage of the already applied Pygments mark-up to insert
+        % potential linebreaks for TeX processing.
+        %        {, <, #, %, $, ' and ": go to next line.
+        %        _, }, ^, &, >, - and ~: stay at end of broken line.
+        % Use of \textquotesingle for straight quote.
+        \newcommand*\Wrappedbreaksatspecials {%
+            \def\PYGZus{\discretionary{\char`\_}{\Wrappedafterbreak}{\char`\_}}%
+            \def\PYGZob{\discretionary{}{\Wrappedafterbreak\char`\{}{\char`\{}}%
+            \def\PYGZcb{\discretionary{\char`\}}{\Wrappedafterbreak}{\char`\}}}%
+            \def\PYGZca{\discretionary{\char`\^}{\Wrappedafterbreak}{\char`\^}}%
+            \def\PYGZam{\discretionary{\char`\&}{\Wrappedafterbreak}{\char`\&}}%
+            \def\PYGZlt{\discretionary{}{\Wrappedafterbreak\char`\<}{\char`\<}}%
+            \def\PYGZgt{\discretionary{\char`\>}{\Wrappedafterbreak}{\char`\>}}%
+            \def\PYGZsh{\discretionary{}{\Wrappedafterbreak\char`\#}{\char`\#}}%
+            \def\PYGZpc{\discretionary{}{\Wrappedafterbreak\char`\%}{\char`\%}}%
+            \def\PYGZdl{\discretionary{}{\Wrappedafterbreak\char`\$}{\char`\$}}%
+            \def\PYGZhy{\discretionary{\char`\-}{\Wrappedafterbreak}{\char`\-}}%
+            \def\PYGZsq{\discretionary{}{\Wrappedafterbreak\textquotesingle}{\textquotesingle}}%
+            \def\PYGZdq{\discretionary{}{\Wrappedafterbreak\char`\"}{\char`\"}}%
+            \def\PYGZti{\discretionary{\char`\~}{\Wrappedafterbreak}{\char`\~}}%
+        }
+        % Some characters . , ; ? ! / are not pygmentized.
+        % This macro makes them "active" and they will insert potential linebreaks
+        \newcommand*\Wrappedbreaksatpunct {%
+            \lccode`\~`\.\lowercase{\def~}{\discretionary{\hbox{\char`\.}}{\Wrappedafterbreak}{\hbox{\char`\.}}}%
+            \lccode`\~`\,\lowercase{\def~}{\discretionary{\hbox{\char`\,}}{\Wrappedafterbreak}{\hbox{\char`\,}}}%
+            \lccode`\~`\;\lowercase{\def~}{\discretionary{\hbox{\char`\;}}{\Wrappedafterbreak}{\hbox{\char`\;}}}%
+            \lccode`\~`\:\lowercase{\def~}{\discretionary{\hbox{\char`\:}}{\Wrappedafterbreak}{\hbox{\char`\:}}}%
+            \lccode`\~`\?\lowercase{\def~}{\discretionary{\hbox{\char`\?}}{\Wrappedafterbreak}{\hbox{\char`\?}}}%
+            \lccode`\~`\!\lowercase{\def~}{\discretionary{\hbox{\char`\!}}{\Wrappedafterbreak}{\hbox{\char`\!}}}%
+            \lccode`\~`\/\lowercase{\def~}{\discretionary{\hbox{\char`\/}}{\Wrappedafterbreak}{\hbox{\char`\/}}}%
+            \catcode`\.\active
+            \catcode`\,\active
+            \catcode`\;\active
+            \catcode`\:\active
+            \catcode`\?\active
+            \catcode`\!\active
+            \catcode`\/\active
+            \lccode`\~`\~
+        }
+    \makeatother
+
+    \let\OriginalVerbatim=\Verbatim
+    \makeatletter
+    \renewcommand{\Verbatim}[1][1]{%
+        %\parskip\z@skip
+        \sbox\Wrappedcontinuationbox {\Wrappedcontinuationsymbol}%
+        \sbox\Wrappedvisiblespacebox {\FV@SetupFont\Wrappedvisiblespace}%
+        \def\FancyVerbFormatLine ##1{\hsize\linewidth
+            \vtop{\raggedright\hyphenpenalty\z@\exhyphenpenalty\z@
+                \doublehyphendemerits\z@\finalhyphendemerits\z@
+                \strut ##1\strut}%
+        }%
+        % If the linebreak is at a space, the latter will be displayed as visible
+        % space at end of first line, and a continuation symbol starts next line.
+        % Stretch/shrink are however usually zero for typewriter font.
+        \def\FV@Space {%
+            \nobreak\hskip\z@ plus\fontdimen3\font minus\fontdimen4\font
+            \discretionary{\copy\Wrappedvisiblespacebox}{\Wrappedafterbreak}
+            {\kern\fontdimen2\font}%
+        }%
+
+        % Allow breaks at special characters using \PYG... macros.
+        \Wrappedbreaksatspecials
+        % Breaks at punctuation characters . , ; ? ! and / need catcode=\active
+        \OriginalVerbatim[#1,codes*=\Wrappedbreaksatpunct]%
+    }
+    \makeatother
+
+    % Exact colors from NB
+    \definecolor{incolor}{HTML}{303F9F}
+    \definecolor{outcolor}{HTML}{D84315}
+    \definecolor{cellborder}{HTML}{CFCFCF}
+    \definecolor{cellbackground}{HTML}{F7F7F7}
+
+    % prompt
+    \makeatletter
+    \newcommand{\boxspacing}{\kern\kvtcb@left@rule\kern\kvtcb@boxsep}
+    \makeatother
+    \newcommand{\prompt}[4]{
+        {\ttfamily\llap{{\color{#2}[#3]:\hspace{3pt}#4}}\vspace{-\baselineskip}}
+    }
+    
+
+    
+    % Prevent overflowing lines due to hard-to-break entities
+    \sloppy
+    % Setup hyperref package
+    \hypersetup{
+      breaklinks=true,  % so long urls are correctly broken across lines
+      colorlinks=true,
+      urlcolor=urlcolor,
+      linkcolor=linkcolor,
+      citecolor=citecolor,
+      }
+    % Slightly bigger margins than the latex defaults
+    
+    \geometry{verbose,tmargin=1in,bmargin=1in,lmargin=1in,rmargin=1in}
+    
+    
+
+\begin{document}
+    
+    \maketitle
+    
+    
+
+    
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{1}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k+kn}{import} \PY{n+nn}{pandas} \PY{k}{as} \PY{n+nn}{pd}
+\PY{k+kn}{import} \PY{n+nn}{numpy} \PY{k}{as} \PY{n+nn}{n}
+\PY{k+kn}{import} \PY{n+nn}{matplotlib}\PY{n+nn}{.}\PY{n+nn}{pyplot} \PY{k}{as} \PY{n+nn}{plt}
+\PY{o}{\PYZpc{}}\PY{k}{matplotlib} inline
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{2}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k+kn}{import} \PY{n+nn}{io} 
+\PY{o}{\PYZpc{}}\PY{k}{cd} \PYZbs{}Users\PYZbs{}DELL\PYZbs{}Desktop\PYZbs{}pythonfolder
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+C:\textbackslash{}Users\textbackslash{}DELL\textbackslash{}Desktop\textbackslash{}pythonfolder
+    \end{Verbatim}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{3}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{movie} \PY{o}{=}\PY{n}{pd}\PY{o}{.}\PY{n}{read\PYZus{}csv}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{tmdb\PYZus{}5000\PYZus{}movies.csv}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{credits}\PY{o}{=}\PY{n}{pd}\PY{o}{.}\PY{n}{read\PYZus{}csv}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{tmdb\PYZus{}5000\PYZus{}credits.csv}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{4}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{movie}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{4}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+         budget                                             genres  \textbackslash{}
+0     237000000  [\{"id": 28, "name": "Action"\}, \{"id": 12, "nam{\ldots}
+1     300000000  [\{"id": 12, "name": "Adventure"\}, \{"id": 14, "{\ldots}
+2     245000000  [\{"id": 28, "name": "Action"\}, \{"id": 12, "nam{\ldots}
+3     250000000  [\{"id": 28, "name": "Action"\}, \{"id": 80, "nam{\ldots}
+4     260000000  [\{"id": 28, "name": "Action"\}, \{"id": 12, "nam{\ldots}
+{\ldots}         {\ldots}                                                {\ldots}
+4798     220000  [\{"id": 28, "name": "Action"\}, \{"id": 80, "nam{\ldots}
+4799       9000  [\{"id": 35, "name": "Comedy"\}, \{"id": 10749, "{\ldots}
+4800          0  [\{"id": 35, "name": "Comedy"\}, \{"id": 18, "nam{\ldots}
+4801          0                                                 []
+4802          0                [\{"id": 99, "name": "Documentary"\}]
+
+                                               homepage      id  \textbackslash{}
+0                           http://www.avatarmovie.com/   19995
+1          http://disney.go.com/disneypictures/pirates/     285
+2           http://www.sonypictures.com/movies/spectre/  206647
+3                    http://www.thedarkknightrises.com/   49026
+4                  http://movies.disney.com/john-carter   49529
+{\ldots}                                                 {\ldots}     {\ldots}
+4798                                                NaN    9367
+4799                                                NaN   72766
+4800  http://www.hallmarkchannel.com/signedsealeddel{\ldots}  231617
+4801                        http://shanghaicalling.com/  126186
+4802                                                NaN   25975
+
+                                               keywords original\_language  \textbackslash{}
+0     [\{"id": 1463, "name": "culture clash"\}, \{"id":{\ldots}                en
+1     [\{"id": 270, "name": "ocean"\}, \{"id": 726, "na{\ldots}                en
+2     [\{"id": 470, "name": "spy"\}, \{"id": 818, "name{\ldots}                en
+3     [\{"id": 849, "name": "dc comics"\}, \{"id": 853,{\ldots}                en
+4     [\{"id": 818, "name": "based on novel"\}, \{"id":{\ldots}                en
+{\ldots}                                                 {\ldots}               {\ldots}
+4798  [\{"id": 5616, "name": "united states\textbackslash{}u2013mexi{\ldots}                es
+4799                                                 []                en
+4800  [\{"id": 248, "name": "date"\}, \{"id": 699, "nam{\ldots}                en
+4801                                                 []                en
+4802  [\{"id": 1523, "name": "obsession"\}, \{"id": 224{\ldots}                en
+
+                                original\_title  \textbackslash{}
+0                                       Avatar
+1     Pirates of the Caribbean: At World's End
+2                                      Spectre
+3                        The Dark Knight Rises
+4                                  John Carter
+{\ldots}                                        {\ldots}
+4798                               El Mariachi
+4799                                 Newlyweds
+4800                 Signed, Sealed, Delivered
+4801                          Shanghai Calling
+4802                         My Date with Drew
+
+                                               overview  popularity  \textbackslash{}
+0     In the 22nd century, a paraplegic Marine is di{\ldots}  150.437577
+1     Captain Barbossa, long believed to be dead, ha{\ldots}  139.082615
+2     A cryptic message from Bond’s past sends him o{\ldots}  107.376788
+3     Following the death of District Attorney Harve{\ldots}  112.312950
+4     John Carter is a war-weary, former military ca{\ldots}   43.926995
+{\ldots}                                                 {\ldots}         {\ldots}
+4798  El Mariachi just wants to play his guitar and {\ldots}   14.269792
+4799  A newlywed couple's honeymoon is upended by th{\ldots}    0.642552
+4800  "Signed, Sealed, Delivered" introduces a dedic{\ldots}    1.444476
+4801  When ambitious New York attorney Sam is sent t{\ldots}    0.857008
+4802  Ever since the second grade when he first saw {\ldots}    1.929883
+
+                                   production\_companies  \textbackslash{}
+0     [\{"name": "Ingenious Film Partners", "id": 289{\ldots}
+1     [\{"name": "Walt Disney Pictures", "id": 2\}, \{"{\ldots}
+2     [\{"name": "Columbia Pictures", "id": 5\}, \{"nam{\ldots}
+3     [\{"name": "Legendary Pictures", "id": 923\}, \{"{\ldots}
+4           [\{"name": "Walt Disney Pictures", "id": 2\}]
+{\ldots}                                                 {\ldots}
+4798           [\{"name": "Columbia Pictures", "id": 5\}]
+4799                                                 []
+4800  [\{"name": "Front Street Pictures", "id": 3958\}{\ldots}
+4801                                                 []
+4802  [\{"name": "rusty bear entertainment", "id": 87{\ldots}
+
+                                   production\_countries release\_date  \textbackslash{}
+0     [\{"iso\_3166\_1": "US", "name": "United States o{\ldots}   2009-12-10
+1     [\{"iso\_3166\_1": "US", "name": "United States o{\ldots}   2007-05-19
+2     [\{"iso\_3166\_1": "GB", "name": "United Kingdom"{\ldots}   2015-10-26
+3     [\{"iso\_3166\_1": "US", "name": "United States o{\ldots}   2012-07-16
+4     [\{"iso\_3166\_1": "US", "name": "United States o{\ldots}   2012-03-07
+{\ldots}                                                 {\ldots}          {\ldots}
+4798  [\{"iso\_3166\_1": "MX", "name": "Mexico"\}, \{"iso{\ldots}   1992-09-04
+4799                                                 []   2011-12-26
+4800  [\{"iso\_3166\_1": "US", "name": "United States o{\ldots}   2013-10-13
+4801  [\{"iso\_3166\_1": "US", "name": "United States o{\ldots}   2012-05-03
+4802  [\{"iso\_3166\_1": "US", "name": "United States o{\ldots}   2005-08-05
+
+         revenue  runtime                                   spoken\_languages  \textbackslash{}
+0     2787965087    162.0  [\{"iso\_639\_1": "en", "name": "English"\}, \{"iso{\ldots}
+1      961000000    169.0           [\{"iso\_639\_1": "en", "name": "English"\}]
+2      880674609    148.0  [\{"iso\_639\_1": "fr", "name": "Fran\textbackslash{}u00e7ais"\},{\ldots}
+3     1084939099    165.0           [\{"iso\_639\_1": "en", "name": "English"\}]
+4      284139100    132.0           [\{"iso\_639\_1": "en", "name": "English"\}]
+{\ldots}          {\ldots}      {\ldots}                                                {\ldots}
+4798     2040920     81.0      [\{"iso\_639\_1": "es", "name": "Espa\textbackslash{}u00f1ol"\}]
+4799           0     85.0                                                 []
+4800           0    120.0           [\{"iso\_639\_1": "en", "name": "English"\}]
+4801           0     98.0           [\{"iso\_639\_1": "en", "name": "English"\}]
+4802           0     90.0           [\{"iso\_639\_1": "en", "name": "English"\}]
+
+        status                                            tagline  \textbackslash{}
+0     Released                        Enter the World of Pandora.
+1     Released     At the end of the world, the adventure begins.
+2     Released                              A Plan No One Escapes
+3     Released                                    The Legend Ends
+4     Released               Lost in our world, found in another.
+{\ldots}        {\ldots}                                                {\ldots}
+4798  Released  He didn't come looking for trouble, but troubl{\ldots}
+4799  Released  A newlywed couple's honeymoon is upended by th{\ldots}
+4800  Released                                                NaN
+4801  Released                           A New Yorker in Shanghai
+4802  Released                                                NaN
+
+                                         title  vote\_average  vote\_count
+0                                       Avatar           7.2       11800
+1     Pirates of the Caribbean: At World's End           6.9        4500
+2                                      Spectre           6.3        4466
+3                        The Dark Knight Rises           7.6        9106
+4                                  John Carter           6.1        2124
+{\ldots}                                        {\ldots}           {\ldots}         {\ldots}
+4798                               El Mariachi           6.6         238
+4799                                 Newlyweds           5.9           5
+4800                 Signed, Sealed, Delivered           7.0           6
+4801                          Shanghai Calling           5.7           7
+4802                         My Date with Drew           6.3          16
+
+[4803 rows x 20 columns]
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{5}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{credits}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{5}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+      movie\_id                                     title  \textbackslash{}
+0        19995                                    Avatar
+1          285  Pirates of the Caribbean: At World's End
+2       206647                                   Spectre
+3        49026                     The Dark Knight Rises
+4        49529                               John Carter
+{\ldots}        {\ldots}                                       {\ldots}
+4798      9367                               El Mariachi
+4799     72766                                 Newlyweds
+4800    231617                 Signed, Sealed, Delivered
+4801    126186                          Shanghai Calling
+4802     25975                         My Date with Drew
+
+                                                   cast  \textbackslash{}
+0     [\{"cast\_id": 242, "character": "Jake Sully", "{\ldots}
+1     [\{"cast\_id": 4, "character": "Captain Jack Spa{\ldots}
+2     [\{"cast\_id": 1, "character": "James Bond", "cr{\ldots}
+3     [\{"cast\_id": 2, "character": "Bruce Wayne / Ba{\ldots}
+4     [\{"cast\_id": 5, "character": "John Carter", "c{\ldots}
+{\ldots}                                                 {\ldots}
+4798  [\{"cast\_id": 1, "character": "El Mariachi", "c{\ldots}
+4799  [\{"cast\_id": 1, "character": "Buzzy", "credit\_{\ldots}
+4800  [\{"cast\_id": 8, "character": "Oliver O\textbackslash{}u2019To{\ldots}
+4801  [\{"cast\_id": 3, "character": "Sam", "credit\_id{\ldots}
+4802  [\{"cast\_id": 3, "character": "Herself", "credi{\ldots}
+
+                                                   crew
+0     [\{"credit\_id": "52fe48009251416c750aca23", "de{\ldots}
+1     [\{"credit\_id": "52fe4232c3a36847f800b579", "de{\ldots}
+2     [\{"credit\_id": "54805967c3a36829b5002c41", "de{\ldots}
+3     [\{"credit\_id": "52fe4781c3a36847f81398c3", "de{\ldots}
+4     [\{"credit\_id": "52fe479ac3a36847f813eaa3", "de{\ldots}
+{\ldots}                                                 {\ldots}
+4798  [\{"credit\_id": "52fe44eec3a36847f80b280b", "de{\ldots}
+4799  [\{"credit\_id": "52fe487dc3a368484e0fb013", "de{\ldots}
+4800  [\{"credit\_id": "52fe4df3c3a36847f8275ecf", "de{\ldots}
+4801  [\{"credit\_id": "52fe4ad9c3a368484e16a36b", "de{\ldots}
+4802  [\{"credit\_id": "58ce021b9251415a390165d9", "de{\ldots}
+
+[4803 rows x 4 columns]
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{6}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{movie}\PY{o}{=}\PY{n}{movie}\PY{o}{.}\PY{n}{merge}\PY{p}{(}\PY{n}{credits}\PY{p}{,}\PY{n}{on}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{title}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{c+c1}{\PYZsh{}merging the two dataset}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{7}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{movie}\PY{o}{.}\PY{n}{columns}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{7}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+Index(['budget', 'genres', 'homepage', 'id', 'keywords', 'original\_language',
+       'original\_title', 'overview', 'popularity', 'production\_companies',
+       'production\_countries', 'release\_date', 'revenue', 'runtime',
+       'spoken\_languages', 'status', 'tagline', 'title', 'vote\_average',
+       'vote\_count', 'movie\_id', 'cast', 'crew'],
+      dtype='object')
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{8}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{}now we will remove the columns which did not require}
+\PY{c+c1}{\PYZsh{}genres,id,keywords,title,overview,cast,crew and remaining removing from data}
+\PY{c+c1}{\PYZsh{}orginal language we wil remove becuse it has max english remaining other languages which can be not usefull to implemnt n further data}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{9}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{movie}\PY{o}{=}\PY{n}{movie}\PY{p}{[}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{movie\PYZus{}id}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{title}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{overview}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{genres}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{keywords}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{cast}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{crew}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{]}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{10}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{movie}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{10}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+      movie\_id                                     title  \textbackslash{}
+0        19995                                    Avatar
+1          285  Pirates of the Caribbean: At World's End
+2       206647                                   Spectre
+3        49026                     The Dark Knight Rises
+4        49529                               John Carter
+{\ldots}        {\ldots}                                       {\ldots}
+4804      9367                               El Mariachi
+4805     72766                                 Newlyweds
+4806    231617                 Signed, Sealed, Delivered
+4807    126186                          Shanghai Calling
+4808     25975                         My Date with Drew
+
+                                               overview  \textbackslash{}
+0     In the 22nd century, a paraplegic Marine is di{\ldots}
+1     Captain Barbossa, long believed to be dead, ha{\ldots}
+2     A cryptic message from Bond’s past sends him o{\ldots}
+3     Following the death of District Attorney Harve{\ldots}
+4     John Carter is a war-weary, former military ca{\ldots}
+{\ldots}                                                 {\ldots}
+4804  El Mariachi just wants to play his guitar and {\ldots}
+4805  A newlywed couple's honeymoon is upended by th{\ldots}
+4806  "Signed, Sealed, Delivered" introduces a dedic{\ldots}
+4807  When ambitious New York attorney Sam is sent t{\ldots}
+4808  Ever since the second grade when he first saw {\ldots}
+
+                                                 genres  \textbackslash{}
+0     [\{"id": 28, "name": "Action"\}, \{"id": 12, "nam{\ldots}
+1     [\{"id": 12, "name": "Adventure"\}, \{"id": 14, "{\ldots}
+2     [\{"id": 28, "name": "Action"\}, \{"id": 12, "nam{\ldots}
+3     [\{"id": 28, "name": "Action"\}, \{"id": 80, "nam{\ldots}
+4     [\{"id": 28, "name": "Action"\}, \{"id": 12, "nam{\ldots}
+{\ldots}                                                 {\ldots}
+4804  [\{"id": 28, "name": "Action"\}, \{"id": 80, "nam{\ldots}
+4805  [\{"id": 35, "name": "Comedy"\}, \{"id": 10749, "{\ldots}
+4806  [\{"id": 35, "name": "Comedy"\}, \{"id": 18, "nam{\ldots}
+4807                                                 []
+4808                [\{"id": 99, "name": "Documentary"\}]
+
+                                               keywords  \textbackslash{}
+0     [\{"id": 1463, "name": "culture clash"\}, \{"id":{\ldots}
+1     [\{"id": 270, "name": "ocean"\}, \{"id": 726, "na{\ldots}
+2     [\{"id": 470, "name": "spy"\}, \{"id": 818, "name{\ldots}
+3     [\{"id": 849, "name": "dc comics"\}, \{"id": 853,{\ldots}
+4     [\{"id": 818, "name": "based on novel"\}, \{"id":{\ldots}
+{\ldots}                                                 {\ldots}
+4804  [\{"id": 5616, "name": "united states\textbackslash{}u2013mexi{\ldots}
+4805                                                 []
+4806  [\{"id": 248, "name": "date"\}, \{"id": 699, "nam{\ldots}
+4807                                                 []
+4808  [\{"id": 1523, "name": "obsession"\}, \{"id": 224{\ldots}
+
+                                                   cast  \textbackslash{}
+0     [\{"cast\_id": 242, "character": "Jake Sully", "{\ldots}
+1     [\{"cast\_id": 4, "character": "Captain Jack Spa{\ldots}
+2     [\{"cast\_id": 1, "character": "James Bond", "cr{\ldots}
+3     [\{"cast\_id": 2, "character": "Bruce Wayne / Ba{\ldots}
+4     [\{"cast\_id": 5, "character": "John Carter", "c{\ldots}
+{\ldots}                                                 {\ldots}
+4804  [\{"cast\_id": 1, "character": "El Mariachi", "c{\ldots}
+4805  [\{"cast\_id": 1, "character": "Buzzy", "credit\_{\ldots}
+4806  [\{"cast\_id": 8, "character": "Oliver O\textbackslash{}u2019To{\ldots}
+4807  [\{"cast\_id": 3, "character": "Sam", "credit\_id{\ldots}
+4808  [\{"cast\_id": 3, "character": "Herself", "credi{\ldots}
+
+                                                   crew
+0     [\{"credit\_id": "52fe48009251416c750aca23", "de{\ldots}
+1     [\{"credit\_id": "52fe4232c3a36847f800b579", "de{\ldots}
+2     [\{"credit\_id": "54805967c3a36829b5002c41", "de{\ldots}
+3     [\{"credit\_id": "52fe4781c3a36847f81398c3", "de{\ldots}
+4     [\{"credit\_id": "52fe479ac3a36847f813eaa3", "de{\ldots}
+{\ldots}                                                 {\ldots}
+4804  [\{"credit\_id": "52fe44eec3a36847f80b280b", "de{\ldots}
+4805  [\{"credit\_id": "52fe487dc3a368484e0fb013", "de{\ldots}
+4806  [\{"credit\_id": "52fe4df3c3a36847f8275ecf", "de{\ldots}
+4807  [\{"credit\_id": "52fe4ad9c3a368484e16a36b", "de{\ldots}
+4808  [\{"credit\_id": "58ce021b9251415a390165d9", "de{\ldots}
+
+[4809 rows x 7 columns]
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{11}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{movie}\PY{o}{.}\PY{n}{isnull}\PY{p}{(}\PY{p}{)}\PY{o}{.}\PY{n}{sum}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{11}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+movie\_id    0
+title       0
+overview    3
+genres      0
+keywords    0
+cast        0
+crew        0
+dtype: int64
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{12}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{movie}\PY{o}{.}\PY{n}{dropna}\PY{p}{(}\PY{n}{inplace}\PY{o}{=}\PY{k+kc}{True}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{13}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{movie}\PY{o}{.}\PY{n}{duplicated}\PY{p}{(}\PY{p}{)}\PY{o}{.}\PY{n}{sum}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{13}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+0
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{14}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{movie}\PY{o}{.}\PY{n}{iloc}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{o}{.}\PY{n}{genres}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{14}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+'[\{"id": 28, "name": "Action"\}, \{"id": 12, "name": "Adventure"\}, \{"id": 14,
+"name": "Fantasy"\}, \{"id": 878, "name": "Science Fiction"\}]'
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{15}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k+kn}{import} \PY{n+nn}{ast}
+\PY{k}{def} \PY{n+nf}{convert}\PY{p}{(}\PY{n}{obj}\PY{p}{)}\PY{p}{:}
+    \PY{n}{l}\PY{o}{=}\PY{p}{[}\PY{p}{]}
+    \PY{k}{for} \PY{n}{i} \PY{o+ow}{in} \PY{n}{ast}\PY{o}{.}\PY{n}{literal\PYZus{}eval}\PY{p}{(}\PY{n}{obj}\PY{p}{)}\PY{p}{:} 
+        \PY{n}{l}\PY{o}{.}\PY{n}{append}\PY{p}{(}\PY{n}{i}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{name}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{)}
+    \PY{k}{return} \PY{n}{l}
+\PY{c+c1}{\PYZsh{}ast literal eval means processing data of json data or configuratio files stored in string format}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{16}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{movie}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{genres}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{=}\PY{n}{movie}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{genres}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{.}\PY{n}{apply}\PY{p}{(}\PY{n}{convert}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{17}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{movie}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{17}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+      movie\_id                                     title  \textbackslash{}
+0        19995                                    Avatar
+1          285  Pirates of the Caribbean: At World's End
+2       206647                                   Spectre
+3        49026                     The Dark Knight Rises
+4        49529                               John Carter
+{\ldots}        {\ldots}                                       {\ldots}
+4804      9367                               El Mariachi
+4805     72766                                 Newlyweds
+4806    231617                 Signed, Sealed, Delivered
+4807    126186                          Shanghai Calling
+4808     25975                         My Date with Drew
+
+                                               overview  \textbackslash{}
+0     In the 22nd century, a paraplegic Marine is di{\ldots}
+1     Captain Barbossa, long believed to be dead, ha{\ldots}
+2     A cryptic message from Bond’s past sends him o{\ldots}
+3     Following the death of District Attorney Harve{\ldots}
+4     John Carter is a war-weary, former military ca{\ldots}
+{\ldots}                                                 {\ldots}
+4804  El Mariachi just wants to play his guitar and {\ldots}
+4805  A newlywed couple's honeymoon is upended by th{\ldots}
+4806  "Signed, Sealed, Delivered" introduces a dedic{\ldots}
+4807  When ambitious New York attorney Sam is sent t{\ldots}
+4808  Ever since the second grade when he first saw {\ldots}
+
+                                             genres  \textbackslash{}
+0     [Action, Adventure, Fantasy, Science Fiction]
+1                      [Adventure, Fantasy, Action]
+2                        [Action, Adventure, Crime]
+3                  [Action, Crime, Drama, Thriller]
+4              [Action, Adventure, Science Fiction]
+{\ldots}                                             {\ldots}
+4804                      [Action, Crime, Thriller]
+4805                              [Comedy, Romance]
+4806             [Comedy, Drama, Romance, TV Movie]
+4807                                             []
+4808                                  [Documentary]
+
+                                               keywords  \textbackslash{}
+0     [\{"id": 1463, "name": "culture clash"\}, \{"id":{\ldots}
+1     [\{"id": 270, "name": "ocean"\}, \{"id": 726, "na{\ldots}
+2     [\{"id": 470, "name": "spy"\}, \{"id": 818, "name{\ldots}
+3     [\{"id": 849, "name": "dc comics"\}, \{"id": 853,{\ldots}
+4     [\{"id": 818, "name": "based on novel"\}, \{"id":{\ldots}
+{\ldots}                                                 {\ldots}
+4804  [\{"id": 5616, "name": "united states\textbackslash{}u2013mexi{\ldots}
+4805                                                 []
+4806  [\{"id": 248, "name": "date"\}, \{"id": 699, "nam{\ldots}
+4807                                                 []
+4808  [\{"id": 1523, "name": "obsession"\}, \{"id": 224{\ldots}
+
+                                                   cast  \textbackslash{}
+0     [\{"cast\_id": 242, "character": "Jake Sully", "{\ldots}
+1     [\{"cast\_id": 4, "character": "Captain Jack Spa{\ldots}
+2     [\{"cast\_id": 1, "character": "James Bond", "cr{\ldots}
+3     [\{"cast\_id": 2, "character": "Bruce Wayne / Ba{\ldots}
+4     [\{"cast\_id": 5, "character": "John Carter", "c{\ldots}
+{\ldots}                                                 {\ldots}
+4804  [\{"cast\_id": 1, "character": "El Mariachi", "c{\ldots}
+4805  [\{"cast\_id": 1, "character": "Buzzy", "credit\_{\ldots}
+4806  [\{"cast\_id": 8, "character": "Oliver O\textbackslash{}u2019To{\ldots}
+4807  [\{"cast\_id": 3, "character": "Sam", "credit\_id{\ldots}
+4808  [\{"cast\_id": 3, "character": "Herself", "credi{\ldots}
+
+                                                   crew
+0     [\{"credit\_id": "52fe48009251416c750aca23", "de{\ldots}
+1     [\{"credit\_id": "52fe4232c3a36847f800b579", "de{\ldots}
+2     [\{"credit\_id": "54805967c3a36829b5002c41", "de{\ldots}
+3     [\{"credit\_id": "52fe4781c3a36847f81398c3", "de{\ldots}
+4     [\{"credit\_id": "52fe479ac3a36847f813eaa3", "de{\ldots}
+{\ldots}                                                 {\ldots}
+4804  [\{"credit\_id": "52fe44eec3a36847f80b280b", "de{\ldots}
+4805  [\{"credit\_id": "52fe487dc3a368484e0fb013", "de{\ldots}
+4806  [\{"credit\_id": "52fe4df3c3a36847f8275ecf", "de{\ldots}
+4807  [\{"credit\_id": "52fe4ad9c3a368484e16a36b", "de{\ldots}
+4808  [\{"credit\_id": "58ce021b9251415a390165d9", "de{\ldots}
+
+[4806 rows x 7 columns]
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{18}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{movie}\PY{o}{.}\PY{n}{iloc}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{o}{.}\PY{n}{keywords}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{18}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+'[\{"id": 1463, "name": "culture clash"\}, \{"id": 2964, "name": "future"\}, \{"id":
+3386, "name": "space war"\}, \{"id": 3388, "name": "space colony"\}, \{"id": 3679,
+"name": "society"\}, \{"id": 3801, "name": "space travel"\}, \{"id": 9685, "name":
+"futuristic"\}, \{"id": 9840, "name": "romance"\}, \{"id": 9882, "name": "space"\},
+\{"id": 9951, "name": "alien"\}, \{"id": 10148, "name": "tribe"\}, \{"id": 10158,
+"name": "alien planet"\}, \{"id": 10987, "name": "cgi"\}, \{"id": 11399, "name":
+"marine"\}, \{"id": 13065, "name": "soldier"\}, \{"id": 14643, "name": "battle"\},
+\{"id": 14720, "name": "love affair"\}, \{"id": 165431, "name": "anti war"\}, \{"id":
+193554, "name": "power relations"\}, \{"id": 206690, "name": "mind and soul"\},
+\{"id": 209714, "name": "3d"\}]'
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{19}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{movie}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{keywords}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{=}\PY{n}{movie}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{keywords}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{.}\PY{n}{apply}\PY{p}{(}\PY{n}{convert}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{20}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{movie}\PY{o}{.}\PY{n}{iloc}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{o}{.}\PY{n}{cast}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{20}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+'[\{"cast\_id": 242, "character": "Jake Sully", "credit\_id":
+"5602a8a7c3a3685532001c9a", "gender": 2, "id": 65731, "name": "Sam Worthington",
+"order": 0\}, \{"cast\_id": 3, "character": "Neytiri", "credit\_id":
+"52fe48009251416c750ac9cb", "gender": 1, "id": 8691, "name": "Zoe Saldana",
+"order": 1\}, \{"cast\_id": 25, "character": "Dr. Grace Augustine", "credit\_id":
+"52fe48009251416c750aca39", "gender": 1, "id": 10205, "name": "Sigourney
+Weaver", "order": 2\}, \{"cast\_id": 4, "character": "Col. Quaritch", "credit\_id":
+"52fe48009251416c750ac9cf", "gender": 2, "id": 32747, "name": "Stephen Lang",
+"order": 3\}, \{"cast\_id": 5, "character": "Trudy Chacon", "credit\_id":
+"52fe48009251416c750ac9d3", "gender": 1, "id": 17647, "name": "Michelle
+Rodriguez", "order": 4\}, \{"cast\_id": 8, "character": "Selfridge", "credit\_id":
+"52fe48009251416c750ac9e1", "gender": 2, "id": 1771, "name": "Giovanni Ribisi",
+"order": 5\}, \{"cast\_id": 7, "character": "Norm Spellman", "credit\_id":
+"52fe48009251416c750ac9dd", "gender": 2, "id": 59231, "name": "Joel David
+Moore", "order": 6\}, \{"cast\_id": 9, "character": "Moat", "credit\_id":
+"52fe48009251416c750ac9e5", "gender": 1, "id": 30485, "name": "CCH Pounder",
+"order": 7\}, \{"cast\_id": 11, "character": "Eytukan", "credit\_id":
+"52fe48009251416c750ac9ed", "gender": 2, "id": 15853, "name": "Wes Studi",
+"order": 8\}, \{"cast\_id": 10, "character": "Tsu\textbackslash{}'Tey", "credit\_id":
+"52fe48009251416c750ac9e9", "gender": 2, "id": 10964, "name": "Laz Alonso",
+"order": 9\}, \{"cast\_id": 12, "character": "Dr. Max Patel", "credit\_id":
+"52fe48009251416c750ac9f1", "gender": 2, "id": 95697, "name": "Dileep Rao",
+"order": 10\}, \{"cast\_id": 13, "character": "Lyle Wainfleet", "credit\_id":
+"52fe48009251416c750ac9f5", "gender": 2, "id": 98215, "name": "Matt Gerald",
+"order": 11\}, \{"cast\_id": 32, "character": "Private Fike", "credit\_id":
+"52fe48009251416c750aca5b", "gender": 2, "id": 154153, "name": "Sean Anthony
+Moran", "order": 12\}, \{"cast\_id": 33, "character": "Cryo Vault Med Tech",
+"credit\_id": "52fe48009251416c750aca5f", "gender": 2, "id": 397312, "name":
+"Jason Whyte", "order": 13\}, \{"cast\_id": 34, "character": "Venture Star Crew
+Chief", "credit\_id": "52fe48009251416c750aca63", "gender": 2, "id": 42317,
+"name": "Scott Lawrence", "order": 14\}, \{"cast\_id": 35, "character": "Lock Up
+Trooper", "credit\_id": "52fe48009251416c750aca67", "gender": 2, "id": 986734,
+"name": "Kelly Kilgour", "order": 15\}, \{"cast\_id": 36, "character": "Shuttle
+Pilot", "credit\_id": "52fe48009251416c750aca6b", "gender": 0, "id": 1207227,
+"name": "James Patrick Pitt", "order": 16\}, \{"cast\_id": 37, "character":
+"Shuttle Co-Pilot", "credit\_id": "52fe48009251416c750aca6f", "gender": 0, "id":
+1180936, "name": "Sean Patrick Murphy", "order": 17\}, \{"cast\_id": 38,
+"character": "Shuttle Crew Chief", "credit\_id": "52fe48009251416c750aca73",
+"gender": 2, "id": 1019578, "name": "Peter Dillon", "order": 18\}, \{"cast\_id":
+39, "character": "Tractor Operator / Troupe", "credit\_id":
+"52fe48009251416c750aca77", "gender": 0, "id": 91443, "name": "Kevin Dorman",
+"order": 19\}, \{"cast\_id": 40, "character": "Dragon Gunship Pilot", "credit\_id":
+"52fe48009251416c750aca7b", "gender": 2, "id": 173391, "name": "Kelson
+Henderson", "order": 20\}, \{"cast\_id": 41, "character": "Dragon Gunship Gunner",
+"credit\_id": "52fe48009251416c750aca7f", "gender": 0, "id": 1207236, "name":
+"David Van Horn", "order": 21\}, \{"cast\_id": 42, "character": "Dragon Gunship
+Navigator", "credit\_id": "52fe48009251416c750aca83", "gender": 0, "id": 215913,
+"name": "Jacob Tomuri", "order": 22\}, \{"cast\_id": 43, "character": "Suit \#1",
+"credit\_id": "52fe48009251416c750aca87", "gender": 0, "id": 143206, "name":
+"Michael Blain-Rozgay", "order": 23\}, \{"cast\_id": 44, "character": "Suit \#2",
+"credit\_id": "52fe48009251416c750aca8b", "gender": 2, "id": 169676, "name": "Jon
+Curry", "order": 24\}, \{"cast\_id": 46, "character": "Ambient Room Tech",
+"credit\_id": "52fe48009251416c750aca8f", "gender": 0, "id": 1048610, "name":
+"Luke Hawker", "order": 25\}, \{"cast\_id": 47, "character": "Ambient Room Tech /
+Troupe", "credit\_id": "52fe48009251416c750aca93", "gender": 0, "id": 42288,
+"name": "Woody Schultz", "order": 26\}, \{"cast\_id": 48, "character": "Horse Clan
+Leader", "credit\_id": "52fe48009251416c750aca97", "gender": 2, "id": 68278,
+"name": "Peter Mensah", "order": 27\}, \{"cast\_id": 49, "character": "Link Room
+Tech", "credit\_id": "52fe48009251416c750aca9b", "gender": 0, "id": 1207247,
+"name": "Sonia Yee", "order": 28\}, \{"cast\_id": 50, "character": "Basketball
+Avatar / Troupe", "credit\_id": "52fe48009251416c750aca9f", "gender": 1, "id":
+1207248, "name": "Jahnel Curfman", "order": 29\}, \{"cast\_id": 51, "character":
+"Basketball Avatar", "credit\_id": "52fe48009251416c750acaa3", "gender": 0, "id":
+89714, "name": "Ilram Choi", "order": 30\}, \{"cast\_id": 52, "character": "Na\textbackslash{}'vi
+Child", "credit\_id": "52fe48009251416c750acaa7", "gender": 0, "id": 1207249,
+"name": "Kyla Warren", "order": 31\}, \{"cast\_id": 53, "character": "Troupe",
+"credit\_id": "52fe48009251416c750acaab", "gender": 0, "id": 1207250, "name":
+"Lisa Roumain", "order": 32\}, \{"cast\_id": 54, "character": "Troupe",
+"credit\_id": "52fe48009251416c750acaaf", "gender": 1, "id": 83105, "name":
+"Debra Wilson", "order": 33\}, \{"cast\_id": 57, "character": "Troupe",
+"credit\_id": "52fe48009251416c750acabb", "gender": 0, "id": 1207253, "name":
+"Chris Mala", "order": 34\}, \{"cast\_id": 55, "character": "Troupe", "credit\_id":
+"52fe48009251416c750acab3", "gender": 0, "id": 1207251, "name": "Taylor Kibby",
+"order": 35\}, \{"cast\_id": 56, "character": "Troupe", "credit\_id":
+"52fe48009251416c750acab7", "gender": 0, "id": 1207252, "name": "Jodie Landau",
+"order": 36\}, \{"cast\_id": 58, "character": "Troupe", "credit\_id":
+"52fe48009251416c750acabf", "gender": 0, "id": 1207254, "name": "Julie Lamm",
+"order": 37\}, \{"cast\_id": 59, "character": "Troupe", "credit\_id":
+"52fe48009251416c750acac3", "gender": 0, "id": 1207257, "name": "Cullen B.
+Madden", "order": 38\}, \{"cast\_id": 60, "character": "Troupe", "credit\_id":
+"52fe48009251416c750acac7", "gender": 0, "id": 1207259, "name": "Joseph Brady
+Madden", "order": 39\}, \{"cast\_id": 61, "character": "Troupe", "credit\_id":
+"52fe48009251416c750acacb", "gender": 0, "id": 1207262, "name": "Frankie
+Torres", "order": 40\}, \{"cast\_id": 62, "character": "Troupe", "credit\_id":
+"52fe48009251416c750acacf", "gender": 1, "id": 1158600, "name": "Austin Wilson",
+"order": 41\}, \{"cast\_id": 63, "character": "Troupe", "credit\_id":
+"52fe48019251416c750acad3", "gender": 1, "id": 983705, "name": "Sara Wilson",
+"order": 42\}, \{"cast\_id": 64, "character": "Troupe", "credit\_id":
+"52fe48019251416c750acad7", "gender": 0, "id": 1207263, "name": "Tamica
+Washington-Miller", "order": 43\}, \{"cast\_id": 65, "character": "Op Center
+Staff", "credit\_id": "52fe48019251416c750acadb", "gender": 1, "id": 1145098,
+"name": "Lucy Briant", "order": 44\}, \{"cast\_id": 66, "character": "Op Center
+Staff", "credit\_id": "52fe48019251416c750acadf", "gender": 2, "id": 33305,
+"name": "Nathan Meister", "order": 45\}, \{"cast\_id": 67, "character": "Op Center
+Staff", "credit\_id": "52fe48019251416c750acae3", "gender": 0, "id": 1207264,
+"name": "Gerry Blair", "order": 46\}, \{"cast\_id": 68, "character": "Op Center
+Staff", "credit\_id": "52fe48019251416c750acae7", "gender": 2, "id": 33311,
+"name": "Matthew Chamberlain", "order": 47\}, \{"cast\_id": 69, "character": "Op
+Center Staff", "credit\_id": "52fe48019251416c750acaeb", "gender": 0, "id":
+1207265, "name": "Paul Yates", "order": 48\}, \{"cast\_id": 70, "character": "Op
+Center Duty Officer", "credit\_id": "52fe48019251416c750acaef", "gender": 0,
+"id": 1207266, "name": "Wray Wilson", "order": 49\}, \{"cast\_id": 71, "character":
+"Op Center Staff", "credit\_id": "52fe48019251416c750acaf3", "gender": 2, "id":
+54492, "name": "James Gaylyn", "order": 50\}, \{"cast\_id": 72, "character":
+"Dancer", "credit\_id": "52fe48019251416c750acaf7", "gender": 0, "id": 1207267,
+"name": "Melvin Leno Clark III", "order": 51\}, \{"cast\_id": 73, "character":
+"Dancer", "credit\_id": "52fe48019251416c750acafb", "gender": 0, "id": 1207268,
+"name": "Carvon Futrell", "order": 52\}, \{"cast\_id": 74, "character": "Dancer",
+"credit\_id": "52fe48019251416c750acaff", "gender": 0, "id": 1207269, "name":
+"Brandon Jelkes", "order": 53\}, \{"cast\_id": 75, "character": "Dancer",
+"credit\_id": "52fe48019251416c750acb03", "gender": 0, "id": 1207270, "name":
+"Micah Moch", "order": 54\}, \{"cast\_id": 76, "character": "Dancer", "credit\_id":
+"52fe48019251416c750acb07", "gender": 0, "id": 1207271, "name": "Hanniyah
+Muhammad", "order": 55\}, \{"cast\_id": 77, "character": "Dancer", "credit\_id":
+"52fe48019251416c750acb0b", "gender": 0, "id": 1207272, "name": "Christopher
+Nolen", "order": 56\}, \{"cast\_id": 78, "character": "Dancer", "credit\_id":
+"52fe48019251416c750acb0f", "gender": 0, "id": 1207273, "name": "Christa
+Oliver", "order": 57\}, \{"cast\_id": 79, "character": "Dancer", "credit\_id":
+"52fe48019251416c750acb13", "gender": 0, "id": 1207274, "name": "April Marie
+Thomas", "order": 58\}, \{"cast\_id": 80, "character": "Dancer", "credit\_id":
+"52fe48019251416c750acb17", "gender": 0, "id": 1207275, "name": "Bravita A.
+Threatt", "order": 59\}, \{"cast\_id": 81, "character": "Mining Chief
+(uncredited)", "credit\_id": "52fe48019251416c750acb1b", "gender": 0, "id":
+1207276, "name": "Colin Bleasdale", "order": 60\}, \{"cast\_id": 82, "character":
+"Veteran Miner (uncredited)", "credit\_id": "52fe48019251416c750acb1f", "gender":
+0, "id": 107969, "name": "Mike Bodnar", "order": 61\}, \{"cast\_id": 83,
+"character": "Richard (uncredited)", "credit\_id": "52fe48019251416c750acb23",
+"gender": 0, "id": 1207278, "name": "Matt Clayton", "order": 62\}, \{"cast\_id":
+84, "character": "Nav\textbackslash{}'i (uncredited)", "credit\_id": "52fe48019251416c750acb27",
+"gender": 1, "id": 147898, "name": "Nicole Dionne", "order": 63\}, \{"cast\_id":
+85, "character": "Trooper (uncredited)", "credit\_id":
+"52fe48019251416c750acb2b", "gender": 0, "id": 1207280, "name": "Jamie
+Harrison", "order": 64\}, \{"cast\_id": 86, "character": "Trooper (uncredited)",
+"credit\_id": "52fe48019251416c750acb2f", "gender": 0, "id": 1207281, "name":
+"Allan Henry", "order": 65\}, \{"cast\_id": 87, "character": "Ground Technician
+(uncredited)", "credit\_id": "52fe48019251416c750acb33", "gender": 2, "id":
+1207282, "name": "Anthony Ingruber", "order": 66\}, \{"cast\_id": 88, "character":
+"Flight Crew Mechanic (uncredited)", "credit\_id": "52fe48019251416c750acb37",
+"gender": 0, "id": 1207283, "name": "Ashley Jeffery", "order": 67\}, \{"cast\_id":
+14, "character": "Samson Pilot", "credit\_id": "52fe48009251416c750ac9f9",
+"gender": 0, "id": 98216, "name": "Dean Knowsley", "order": 68\}, \{"cast\_id": 89,
+"character": "Trooper (uncredited)", "credit\_id": "52fe48019251416c750acb3b",
+"gender": 0, "id": 1201399, "name": "Joseph Mika-Hunt", "order": 69\},
+\{"cast\_id": 90, "character": "Banshee (uncredited)", "credit\_id":
+"52fe48019251416c750acb3f", "gender": 0, "id": 236696, "name": "Terry Notary",
+"order": 70\}, \{"cast\_id": 91, "character": "Soldier (uncredited)", "credit\_id":
+"52fe48019251416c750acb43", "gender": 0, "id": 1207287, "name": "Kai Pantano",
+"order": 71\}, \{"cast\_id": 92, "character": "Blast Technician (uncredited)",
+"credit\_id": "52fe48019251416c750acb47", "gender": 0, "id": 1207288, "name":
+"Logan Pithyou", "order": 72\}, \{"cast\_id": 93, "character": "Vindum Raah
+(uncredited)", "credit\_id": "52fe48019251416c750acb4b", "gender": 0, "id":
+1207289, "name": "Stuart Pollock", "order": 73\}, \{"cast\_id": 94, "character":
+"Hero (uncredited)", "credit\_id": "52fe48019251416c750acb4f", "gender": 0, "id":
+584868, "name": "Raja", "order": 74\}, \{"cast\_id": 95, "character": "Ops
+Centreworker (uncredited)", "credit\_id": "52fe48019251416c750acb53", "gender":
+0, "id": 1207290, "name": "Gareth Ruck", "order": 75\}, \{"cast\_id": 96,
+"character": "Engineer (uncredited)", "credit\_id": "52fe48019251416c750acb57",
+"gender": 0, "id": 1062463, "name": "Rhian Sheehan", "order": 76\}, \{"cast\_id":
+97, "character": "Col. Quaritch\textbackslash{}'s Mech Suit (uncredited)", "credit\_id":
+"52fe48019251416c750acb5b", "gender": 0, "id": 60656, "name": "T. J. Storm",
+"order": 77\}, \{"cast\_id": 98, "character": "Female Marine (uncredited)",
+"credit\_id": "52fe48019251416c750acb5f", "gender": 0, "id": 1207291, "name":
+"Jodie Taylor", "order": 78\}, \{"cast\_id": 99, "character": "Ikran Clan Leader
+(uncredited)", "credit\_id": "52fe48019251416c750acb63", "gender": 1, "id":
+1186027, "name": "Alicia Vela-Bailey", "order": 79\}, \{"cast\_id": 100,
+"character": "Geologist (uncredited)", "credit\_id": "52fe48019251416c750acb67",
+"gender": 0, "id": 1207292, "name": "Richard Whiteside", "order": 80\},
+\{"cast\_id": 101, "character": "Na\textbackslash{}'vi (uncredited)", "credit\_id":
+"52fe48019251416c750acb6b", "gender": 0, "id": 103259, "name": "Nikie Zambo",
+"order": 81\}, \{"cast\_id": 102, "character": "Ambient Room Tech / Troupe",
+"credit\_id": "52fe48019251416c750acb6f", "gender": 1, "id": 42286, "name":
+"Julene Renee", "order": 82\}]'
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{27}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k}{def} \PY{n+nf}{convert3}\PY{p}{(}\PY{n}{obj}\PY{p}{)}\PY{p}{:}
+    \PY{n}{l}\PY{o}{=}\PY{p}{[}\PY{p}{]}
+    \PY{n}{counter}\PY{o}{=}\PY{l+m+mi}{0}
+    \PY{k}{for} \PY{n}{i} \PY{o+ow}{in} \PY{n}{ast}\PY{o}{.}\PY{n}{literal\PYZus{}eval}\PY{p}{(}\PY{n}{obj}\PY{p}{)}\PY{p}{:}
+        \PY{k}{if} \PY{n}{counter}\PY{o}{!=}\PY{l+m+mi}{3}\PY{p}{:}
+            \PY{n}{l}\PY{o}{.}\PY{n}{append}\PY{p}{(}\PY{n}{i}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{name}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{)}
+            \PY{n}{counter}\PY{o}{+}\PY{o}{=}\PY{l+m+mi}{1}
+        \PY{k}{else}\PY{p}{:}
+            \PY{k}{break}
+    \PY{k}{return} \PY{n}{l}
+\PY{c+c1}{\PYZsh{}convert and convert3 functions custom python functions designed to process a string representation of list }
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{28}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{movie}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{cast}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{=}\PY{n}{movie}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{cast}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{.}\PY{n}{apply}\PY{p}{(}\PY{n}{convert3}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{29}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{movie}\PY{o}{.}\PY{n}{iloc}\PY{p}{[}\PY{l+m+mi}{4}\PY{p}{]}\PY{o}{.}\PY{n}{cast}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{29}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+['Taylor Kitsch', 'Lynn Collins', 'Samantha Morton']
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{37}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{movie}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{crew}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{37}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+'[\{"credit\_id": "52fe48009251416c750aca23", "department": "Editing", "gender":
+0, "id": 1721, "job": "Editor", "name": "Stephen E. Rivkin"\}, \{"credit\_id":
+"539c47ecc3a36810e3001f87", "department": "Art", "gender": 2, "id": 496, "job":
+"Production Design", "name": "Rick Carter"\}, \{"credit\_id":
+"54491c89c3a3680fb4001cf7", "department": "Sound", "gender": 0, "id": 900,
+"job": "Sound Designer", "name": "Christopher Boyes"\}, \{"credit\_id":
+"54491cb70e0a267480001bd0", "department": "Sound", "gender": 0, "id": 900,
+"job": "Supervising Sound Editor", "name": "Christopher Boyes"\}, \{"credit\_id":
+"539c4a4cc3a36810c9002101", "department": "Production", "gender": 1, "id": 1262,
+"job": "Casting", "name": "Mali Finn"\}, \{"credit\_id":
+"5544ee3b925141499f0008fc", "department": "Sound", "gender": 2, "id": 1729,
+"job": "Original Music Composer", "name": "James Horner"\}, \{"credit\_id":
+"52fe48009251416c750ac9c3", "department": "Directing", "gender": 2, "id": 2710,
+"job": "Director", "name": "James Cameron"\}, \{"credit\_id":
+"52fe48009251416c750ac9d9", "department": "Writing", "gender": 2, "id": 2710,
+"job": "Writer", "name": "James Cameron"\}, \{"credit\_id":
+"52fe48009251416c750aca17", "department": "Editing", "gender": 2, "id": 2710,
+"job": "Editor", "name": "James Cameron"\}, \{"credit\_id":
+"52fe48009251416c750aca29", "department": "Production", "gender": 2, "id": 2710,
+"job": "Producer", "name": "James Cameron"\}, \{"credit\_id":
+"52fe48009251416c750aca3f", "department": "Writing", "gender": 2, "id": 2710,
+"job": "Screenplay", "name": "James Cameron"\}, \{"credit\_id":
+"539c4987c3a36810ba0021a4", "department": "Art", "gender": 2, "id": 7236, "job":
+"Art Direction", "name": "Andrew Menzies"\}, \{"credit\_id":
+"549598c3c3a3686ae9004383", "department": "Visual Effects", "gender": 0, "id":
+6690, "job": "Visual Effects Producer", "name": "Jill Brooks"\}, \{"credit\_id":
+"52fe48009251416c750aca4b", "department": "Production", "gender": 1, "id": 6347,
+"job": "Casting", "name": "Margery Simkin"\}, \{"credit\_id":
+"570b6f419251417da70032fe", "department": "Art", "gender": 2, "id": 6878, "job":
+"Supervising Art Director", "name": "Kevin Ishioka"\}, \{"credit\_id":
+"5495a0fac3a3686ae9004468", "department": "Sound", "gender": 0, "id": 6883,
+"job": "Music Editor", "name": "Dick Bernstein"\}, \{"credit\_id":
+"54959706c3a3686af3003e81", "department": "Sound", "gender": 0, "id": 8159,
+"job": "Sound Effects Editor", "name": "Shannon Mills"\}, \{"credit\_id":
+"54491d58c3a3680fb1001ccb", "department": "Sound", "gender": 0, "id": 8160,
+"job": "Foley", "name": "Dennie Thorpe"\}, \{"credit\_id":
+"54491d6cc3a3680fa5001b2c", "department": "Sound", "gender": 0, "id": 8163,
+"job": "Foley", "name": "Jana Vance"\}, \{"credit\_id": "52fe48009251416c750aca57",
+"department": "Costume \& Make-Up", "gender": 1, "id": 8527, "job": "Costume
+Design", "name": "Deborah Lynn Scott"\}, \{"credit\_id":
+"52fe48009251416c750aca2f", "department": "Production", "gender": 2, "id": 8529,
+"job": "Producer", "name": "Jon Landau"\}, \{"credit\_id":
+"539c4937c3a36810ba002194", "department": "Art", "gender": 0, "id": 9618, "job":
+"Art Direction", "name": "Sean Haworth"\}, \{"credit\_id":
+"539c49b6c3a36810c10020e6", "department": "Art", "gender": 1, "id": 12653,
+"job": "Set Decoration", "name": "Kim Sinclair"\}, \{"credit\_id":
+"570b6f2f9251413a0e00020d", "department": "Art", "gender": 1, "id": 12653,
+"job": "Supervising Art Director", "name": "Kim Sinclair"\}, \{"credit\_id":
+"54491a6c0e0a26748c001b19", "department": "Art", "gender": 2, "id": 14350,
+"job": "Set Designer", "name": "Richard F. Mays"\}, \{"credit\_id":
+"56928cf4c3a3684cff0025c4", "department": "Production", "gender": 1, "id":
+20294, "job": "Executive Producer", "name": "Laeta Kalogridis"\}, \{"credit\_id":
+"52fe48009251416c750aca51", "department": "Costume \& Make-Up", "gender": 0,
+"id": 17675, "job": "Costume Design", "name": "Mayes C. Rubeo"\}, \{"credit\_id":
+"52fe48009251416c750aca11", "department": "Camera", "gender": 2, "id": 18265,
+"job": "Director of Photography", "name": "Mauro Fiore"\}, \{"credit\_id":
+"5449194d0e0a26748f001b39", "department": "Art", "gender": 0, "id": 42281,
+"job": "Set Designer", "name": "Scott Herbertson"\}, \{"credit\_id":
+"52fe48009251416c750aca05", "department": "Crew", "gender": 0, "id": 42288,
+"job": "Stunts", "name": "Woody Schultz"\}, \{"credit\_id":
+"5592aefb92514152de0010f5", "department": "Costume \& Make-Up", "gender": 0,
+"id": 29067, "job": "Makeup Artist", "name": "Linda DeVetta"\}, \{"credit\_id":
+"5592afa492514152de00112c", "department": "Costume \& Make-Up", "gender": 0,
+"id": 29067, "job": "Hairstylist", "name": "Linda DeVetta"\}, \{"credit\_id":
+"54959ed592514130fc002e5d", "department": "Camera", "gender": 2, "id": 33302,
+"job": "Camera Operator", "name": "Richard Bluck"\}, \{"credit\_id":
+"539c4891c3a36810ba002147", "department": "Art", "gender": 2, "id": 33303,
+"job": "Art Direction", "name": "Simon Bright"\}, \{"credit\_id":
+"54959c069251417a81001f3a", "department": "Visual Effects", "gender": 0, "id":
+113145, "job": "Visual Effects Supervisor", "name": "Richard Martin"\},
+\{"credit\_id": "54959a0dc3a3680ff5002c8d", "department": "Crew", "gender": 2,
+"id": 58188, "job": "Visual Effects Editor", "name": "Steve R. Moore"\},
+\{"credit\_id": "52fe48009251416c750aca1d", "department": "Editing", "gender": 2,
+"id": 58871, "job": "Editor", "name": "John Refoua"\}, \{"credit\_id":
+"54491a4dc3a3680fc30018ca", "department": "Art", "gender": 0, "id": 92359,
+"job": "Set Designer", "name": "Karl J. Martin"\}, \{"credit\_id":
+"52fe48009251416c750aca35", "department": "Camera", "gender": 1, "id": 72201,
+"job": "Director of Photography", "name": "Chiling Lin"\}, \{"credit\_id":
+"52fe48009251416c750ac9ff", "department": "Crew", "gender": 0, "id": 89714,
+"job": "Stunts", "name": "Ilram Choi"\}, \{"credit\_id":
+"54959c529251416e2b004394", "department": "Visual Effects", "gender": 2, "id":
+93214, "job": "Visual Effects Supervisor", "name": "Steven Quale"\},
+\{"credit\_id": "54491edf0e0a267489001c37", "department": "Crew", "gender": 1,
+"id": 122607, "job": "Dialect Coach", "name": "Carla Meyer"\}, \{"credit\_id":
+"539c485bc3a368653d001a3a", "department": "Art", "gender": 2, "id": 132585,
+"job": "Art Direction", "name": "Nick Bassett"\}, \{"credit\_id":
+"539c4903c3a368653d001a74", "department": "Art", "gender": 0, "id": 132596,
+"job": "Art Direction", "name": "Jill Cormack"\}, \{"credit\_id":
+"539c4967c3a368653d001a94", "department": "Art", "gender": 0, "id": 132604,
+"job": "Art Direction", "name": "Andy McLaren"\}, \{"credit\_id":
+"52fe48009251416c750aca45", "department": "Crew", "gender": 0, "id": 236696,
+"job": "Motion Capture Artist", "name": "Terry Notary"\}, \{"credit\_id":
+"54959e02c3a3680fc60027d2", "department": "Crew", "gender": 2, "id": 956198,
+"job": "Stunt Coordinator", "name": "Garrett Warren"\}, \{"credit\_id":
+"54959ca3c3a3686ae300438c", "department": "Visual Effects", "gender": 2, "id":
+957874, "job": "Visual Effects Supervisor", "name": "Jonathan Rothbart"\},
+\{"credit\_id": "570b6f519251412c74001b2f", "department": "Art", "gender": 0,
+"id": 957889, "job": "Supervising Art Director", "name": "Stefan Dechant"\},
+\{"credit\_id": "570b6f62c3a3680b77007460", "department": "Art", "gender": 2,
+"id": 959555, "job": "Supervising Art Director", "name": "Todd Cherniawsky"\},
+\{"credit\_id": "539c4a3ac3a36810da0021cc", "department": "Production", "gender":
+0, "id": 1016177, "job": "Casting", "name": "Miranda Rivers"\}, \{"credit\_id":
+"539c482cc3a36810c1002062", "department": "Art", "gender": 0, "id": 1032536,
+"job": "Production Design", "name": "Robert Stromberg"\}, \{"credit\_id":
+"539c4b65c3a36810c9002125", "department": "Costume \& Make-Up", "gender": 2,
+"id": 1071680, "job": "Costume Design", "name": "John Harding"\}, \{"credit\_id":
+"54959e6692514130fc002e4e", "department": "Camera", "gender": 0, "id": 1177364,
+"job": "Steadicam Operator", "name": "Roberto De Angelis"\}, \{"credit\_id":
+"539c49f1c3a368653d001aac", "department": "Costume \& Make-Up", "gender": 2,
+"id": 1202850, "job": "Makeup Department Head", "name": "Mike Smithson"\},
+\{"credit\_id": "5495999ec3a3686ae100460c", "department": "Visual Effects",
+"gender": 0, "id": 1204668, "job": "Visual Effects Producer", "name": "Alain
+Lalanne"\}, \{"credit\_id": "54959cdfc3a3681153002729", "department": "Visual
+Effects", "gender": 0, "id": 1206410, "job": "Visual Effects Supervisor",
+"name": "Lucas Salton"\}, \{"credit\_id": "549596239251417a81001eae", "department":
+"Crew", "gender": 0, "id": 1234266, "job": "Post Production Supervisor", "name":
+"Janace Tashjian"\}, \{"credit\_id": "54959c859251416e1e003efe", "department":
+"Visual Effects", "gender": 0, "id": 1271932, "job": "Visual Effects
+Supervisor", "name": "Stephen Rosenbaum"\}, \{"credit\_id":
+"5592af28c3a368775a00105f", "department": "Costume \& Make-Up", "gender": 0,
+"id": 1310064, "job": "Makeup Artist", "name": "Frankie Karena"\}, \{"credit\_id":
+"539c4adfc3a36810e300203b", "department": "Costume \& Make-Up", "gender": 1,
+"id": 1319844, "job": "Costume Supervisor", "name": "Lisa Lovaas"\},
+\{"credit\_id": "54959b579251416e2b004371", "department": "Visual Effects",
+"gender": 0, "id": 1327028, "job": "Visual Effects Supervisor", "name":
+"Jonathan Fawkner"\}, \{"credit\_id": "539c48a7c3a36810b5001fa7", "department":
+"Art", "gender": 0, "id": 1330561, "job": "Art Direction", "name": "Robert
+Bavin"\}, \{"credit\_id": "539c4a71c3a36810da0021e0", "department": "Costume \&
+Make-Up", "gender": 0, "id": 1330567, "job": "Costume Supervisor", "name":
+"Anthony Almaraz"\}, \{"credit\_id": "539c4a8ac3a36810ba0021e4", "department":
+"Costume \& Make-Up", "gender": 0, "id": 1330570, "job": "Costume Supervisor",
+"name": "Carolyn M. Fenton"\}, \{"credit\_id": "539c4ab6c3a36810da0021f0",
+"department": "Costume \& Make-Up", "gender": 0, "id": 1330574, "job": "Costume
+Supervisor", "name": "Beth Koenigsberg"\}, \{"credit\_id":
+"54491ab70e0a267480001ba2", "department": "Art", "gender": 0, "id": 1336191,
+"job": "Set Designer", "name": "Sam Page"\}, \{"credit\_id":
+"544919d9c3a3680fc30018bd", "department": "Art", "gender": 0, "id": 1339441,
+"job": "Set Designer", "name": "Tex Kadonaga"\}, \{"credit\_id":
+"54491cf50e0a267483001b0c", "department": "Editing", "gender": 0, "id": 1352422,
+"job": "Dialogue Editor", "name": "Kim Foscato"\}, \{"credit\_id":
+"544919f40e0a26748c001b09", "department": "Art", "gender": 0, "id": 1352962,
+"job": "Set Designer", "name": "Tammy S. Lee"\}, \{"credit\_id":
+"5495a115c3a3680ff5002d71", "department": "Crew", "gender": 0, "id": 1357070,
+"job": "Transportation Coordinator", "name": "Denny Caira"\}, \{"credit\_id":
+"5495a12f92514130fc002e94", "department": "Crew", "gender": 0, "id": 1357071,
+"job": "Transportation Coordinator", "name": "James Waitkus"\}, \{"credit\_id":
+"5495976fc3a36811530026b0", "department": "Sound", "gender": 0, "id": 1360103,
+"job": "Supervising Sound Editor", "name": "Addison Teague"\}, \{"credit\_id":
+"54491837c3a3680fb1001c5a", "department": "Art", "gender": 2, "id": 1376887,
+"job": "Set Designer", "name": "C. Scott Baker"\}, \{"credit\_id":
+"54491878c3a3680fb4001c9d", "department": "Art", "gender": 0, "id": 1376888,
+"job": "Set Designer", "name": "Luke Caska"\}, \{"credit\_id":
+"544918dac3a3680fa5001ae0", "department": "Art", "gender": 0, "id": 1376889,
+"job": "Set Designer", "name": "David Chow"\}, \{"credit\_id":
+"544919110e0a267486001b68", "department": "Art", "gender": 0, "id": 1376890,
+"job": "Set Designer", "name": "Jonathan Dyer"\}, \{"credit\_id":
+"54491967c3a3680faa001b5e", "department": "Art", "gender": 0, "id": 1376891,
+"job": "Set Designer", "name": "Joseph Hiura"\}, \{"credit\_id":
+"54491997c3a3680fb1001c8a", "department": "Art", "gender": 0, "id": 1376892,
+"job": "Art Department Coordinator", "name": "Rebecca Jellie"\}, \{"credit\_id":
+"544919ba0e0a26748f001b42", "department": "Art", "gender": 0, "id": 1376893,
+"job": "Set Designer", "name": "Robert Andrew Johnson"\}, \{"credit\_id":
+"54491b1dc3a3680faa001b8c", "department": "Art", "gender": 0, "id": 1376895,
+"job": "Assistant Art Director", "name": "Mike Stassi"\}, \{"credit\_id":
+"54491b79c3a3680fbb001826", "department": "Art", "gender": 0, "id": 1376897,
+"job": "Construction Coordinator", "name": "John Villarino"\}, \{"credit\_id":
+"54491baec3a3680fb4001ce6", "department": "Art", "gender": 2, "id": 1376898,
+"job": "Assistant Art Director", "name": "Jeffrey Wisniewski"\}, \{"credit\_id":
+"54491d2fc3a3680fb4001d07", "department": "Editing", "gender": 0, "id": 1376899,
+"job": "Dialogue Editor", "name": "Cheryl Nardi"\}, \{"credit\_id":
+"54491d86c3a3680fa5001b2f", "department": "Editing", "gender": 0, "id": 1376901,
+"job": "Dialogue Editor", "name": "Marshall Winn"\}, \{"credit\_id":
+"54491d9dc3a3680faa001bb0", "department": "Sound", "gender": 0, "id": 1376902,
+"job": "Supervising Sound Editor", "name": "Gwendolyn Yates Whittle"\},
+\{"credit\_id": "54491dc10e0a267486001bce", "department": "Sound", "gender": 0,
+"id": 1376903, "job": "Sound Re-Recording Mixer", "name": "William Stein"\},
+\{"credit\_id": "54491f500e0a26747c001c07", "department": "Crew", "gender": 0,
+"id": 1376909, "job": "Choreographer", "name": "Lula Washington"\}, \{"credit\_id":
+"549599239251412c4e002a2e", "department": "Visual Effects", "gender": 0, "id":
+1391692, "job": "Visual Effects Producer", "name": "Chris Del Conte"\},
+\{"credit\_id": "54959d54c3a36831b8001d9a", "department": "Visual Effects",
+"gender": 2, "id": 1391695, "job": "Visual Effects Supervisor", "name": "R.
+Christopher White"\}, \{"credit\_id": "54959bdf9251412c4e002a66", "department":
+"Visual Effects", "gender": 0, "id": 1394070, "job": "Visual Effects
+Supervisor", "name": "Dan Lemmon"\}, \{"credit\_id": "5495971d92514132ed002922",
+"department": "Sound", "gender": 0, "id": 1394129, "job": "Sound Effects
+Editor", "name": "Tim Nielsen"\}, \{"credit\_id": "5592b25792514152cc0011aa",
+"department": "Crew", "gender": 0, "id": 1394286, "job": "CG Supervisor",
+"name": "Michael Mulholland"\}, \{"credit\_id": "54959a329251416e2b004355",
+"department": "Crew", "gender": 0, "id": 1394750, "job": "Visual Effects
+Editor", "name": "Thomas Nittmann"\}, \{"credit\_id": "54959d6dc3a3686ae9004401",
+"department": "Visual Effects", "gender": 0, "id": 1394755, "job": "Visual
+Effects Supervisor", "name": "Edson Williams"\}, \{"credit\_id":
+"5495a08fc3a3686ae300441c", "department": "Editing", "gender": 0, "id": 1394953,
+"job": "Digital Intermediate", "name": "Christine Carr"\}, \{"credit\_id":
+"55402d659251413d6d000249", "department": "Visual Effects", "gender": 0, "id":
+1395269, "job": "Visual Effects Supervisor", "name": "John Bruno"\},
+\{"credit\_id": "54959e7b9251416e1e003f3e", "department": "Camera", "gender": 0,
+"id": 1398970, "job": "Steadicam Operator", "name": "David Emmerichs"\},
+\{"credit\_id": "54959734c3a3686ae10045e0", "department": "Sound", "gender": 0,
+"id": 1400906, "job": "Sound Effects Editor", "name": "Christopher Scarabosio"\},
+\{"credit\_id": "549595dd92514130fc002d79", "department": "Production", "gender":
+0, "id": 1401784, "job": "Production Supervisor", "name": "Jennifer Teves"\},
+\{"credit\_id": "549596009251413af70028cc", "department": "Production", "gender":
+0, "id": 1401785, "job": "Production Manager", "name": "Brigitte Yorke"\},
+\{"credit\_id": "549596e892514130fc002d99", "department": "Sound", "gender": 0,
+"id": 1401786, "job": "Sound Effects Editor", "name": "Ken Fischer"\},
+\{"credit\_id": "549598229251412c4e002a1c", "department": "Crew", "gender": 0,
+"id": 1401787, "job": "Special Effects Coordinator", "name": "Iain Hutton"\},
+\{"credit\_id": "549598349251416e2b00432b", "department": "Crew", "gender": 0,
+"id": 1401788, "job": "Special Effects Coordinator", "name": "Steve Ingram"\},
+\{"credit\_id": "54959905c3a3686ae3004324", "department": "Visual Effects",
+"gender": 0, "id": 1401789, "job": "Visual Effects Producer", "name": "Joyce
+Cox"\}, \{"credit\_id": "5495994b92514132ed002951", "department": "Visual Effects",
+"gender": 0, "id": 1401790, "job": "Visual Effects Producer", "name": "Jenny
+Foster"\}, \{"credit\_id": "549599cbc3a3686ae1004613", "department": "Crew",
+"gender": 0, "id": 1401791, "job": "Visual Effects Editor", "name": "Christopher
+Marino"\}, \{"credit\_id": "549599f2c3a3686ae100461e", "department": "Crew",
+"gender": 0, "id": 1401792, "job": "Visual Effects Editor", "name": "Jim
+Milton"\}, \{"credit\_id": "54959a51c3a3686af3003eb5", "department": "Visual
+Effects", "gender": 0, "id": 1401793, "job": "Visual Effects Producer", "name":
+"Cyndi Ochs"\}, \{"credit\_id": "54959a7cc3a36811530026f4", "department": "Crew",
+"gender": 0, "id": 1401794, "job": "Visual Effects Editor", "name": "Lucas
+Putnam"\}, \{"credit\_id": "54959b91c3a3680ff5002cb4", "department": "Visual
+Effects", "gender": 0, "id": 1401795, "job": "Visual Effects Supervisor",
+"name": "Anthony \textbackslash{}'Max\textbackslash{}' Ivins"\}, \{"credit\_id": "54959bb69251412c4e002a5f",
+"department": "Visual Effects", "gender": 0, "id": 1401796, "job": "Visual
+Effects Supervisor", "name": "John Knoll"\}, \{"credit\_id":
+"54959cbbc3a3686ae3004391", "department": "Visual Effects", "gender": 2, "id":
+1401799, "job": "Visual Effects Supervisor", "name": "Eric Saindon"\},
+\{"credit\_id": "54959d06c3a3686ae90043f6", "department": "Visual Effects",
+"gender": 0, "id": 1401800, "job": "Visual Effects Supervisor", "name": "Wayne
+Stables"\}, \{"credit\_id": "54959d259251416e1e003f11", "department": "Visual
+Effects", "gender": 0, "id": 1401801, "job": "Visual Effects Supervisor",
+"name": "David Stinnett"\}, \{"credit\_id": "54959db49251413af7002975",
+"department": "Visual Effects", "gender": 0, "id": 1401803, "job": "Visual
+Effects Supervisor", "name": "Guy Williams"\}, \{"credit\_id":
+"54959de4c3a3681153002750", "department": "Crew", "gender": 0, "id": 1401804,
+"job": "Stunt Coordinator", "name": "Stuart Thorp"\}, \{"credit\_id":
+"54959ef2c3a3680fc60027f2", "department": "Lighting", "gender": 0, "id":
+1401805, "job": "Best Boy Electric", "name": "Giles Coburn"\}, \{"credit\_id":
+"54959f07c3a3680fc60027f9", "department": "Camera", "gender": 2, "id": 1401806,
+"job": "Still Photographer", "name": "Mark Fellman"\}, \{"credit\_id":
+"54959f47c3a3681153002774", "department": "Lighting", "gender": 0, "id":
+1401807, "job": "Lighting Technician", "name": "Scott Sprague"\}, \{"credit\_id":
+"54959f8cc3a36831b8001df2", "department": "Visual Effects", "gender": 0, "id":
+1401808, "job": "Animation Director", "name": "Jeremy Hollobon"\}, \{"credit\_id":
+"54959fa0c3a36831b8001dfb", "department": "Visual Effects", "gender": 0, "id":
+1401809, "job": "Animation Director", "name": "Orlando Meunier"\}, \{"credit\_id":
+"54959fb6c3a3686af3003f54", "department": "Visual Effects", "gender": 0, "id":
+1401810, "job": "Animation Director", "name": "Taisuke Tanimura"\}, \{"credit\_id":
+"54959fd2c3a36831b8001e02", "department": "Costume \& Make-Up", "gender": 0,
+"id": 1401812, "job": "Set Costumer", "name": "Lilia Mishel Acevedo"\},
+\{"credit\_id": "54959ff9c3a3686ae300440c", "department": "Costume \& Make-Up",
+"gender": 0, "id": 1401814, "job": "Set Costumer", "name": "Alejandro M.
+Hernandez"\}, \{"credit\_id": "5495a0ddc3a3686ae10046fe", "department": "Editing",
+"gender": 0, "id": 1401815, "job": "Digital Intermediate", "name": "Marvin
+Hall"\}, \{"credit\_id": "5495a1f7c3a3686ae3004443", "department": "Production",
+"gender": 0, "id": 1401816, "job": "Publicist", "name": "Judy Alley"\},
+\{"credit\_id": "5592b29fc3a36869d100002f", "department": "Crew", "gender": 0,
+"id": 1418381, "job": "CG Supervisor", "name": "Mike Perry"\}, \{"credit\_id":
+"5592b23a9251415df8001081", "department": "Crew", "gender": 0, "id": 1426854,
+"job": "CG Supervisor", "name": "Andrew Morley"\}, \{"credit\_id":
+"55491e1192514104c40002d8", "department": "Art", "gender": 0, "id": 1438901,
+"job": "Conceptual Design", "name": "Seth Engstrom"\}, \{"credit\_id":
+"5525d5809251417276002b06", "department": "Crew", "gender": 0, "id": 1447362,
+"job": "Visual Effects Art Director", "name": "Eric Oliver"\}, \{"credit\_id":
+"554427ca925141586500312a", "department": "Visual Effects", "gender": 0, "id":
+1447503, "job": "Modeling", "name": "Matsune Suzuki"\}, \{"credit\_id":
+"551906889251415aab001c88", "department": "Art", "gender": 0, "id": 1447524,
+"job": "Art Department Manager", "name": "Paul Tobin"\}, \{"credit\_id":
+"5592af8492514152cc0010de", "department": "Costume \& Make-Up", "gender": 0,
+"id": 1452643, "job": "Hairstylist", "name": "Roxane Griffin"\}, \{"credit\_id":
+"553d3c109251415852001318", "department": "Lighting", "gender": 0, "id":
+1453938, "job": "Lighting Artist", "name": "Arun Ram-Mohan"\}, \{"credit\_id":
+"5592af4692514152d5001355", "department": "Costume \& Make-Up", "gender": 0,
+"id": 1457305, "job": "Makeup Artist", "name": "Georgia Lockhart-Adams"\},
+\{"credit\_id": "5592b2eac3a36877470012a5", "department": "Crew", "gender": 0,
+"id": 1466035, "job": "CG Supervisor", "name": "Thrain Shadbolt"\}, \{"credit\_id":
+"5592b032c3a36877450015f1", "department": "Crew", "gender": 0, "id": 1483220,
+"job": "CG Supervisor", "name": "Brad Alexander"\}, \{"credit\_id":
+"5592b05592514152d80012f6", "department": "Crew", "gender": 0, "id": 1483221,
+"job": "CG Supervisor", "name": "Shadi Almassizadeh"\}, \{"credit\_id":
+"5592b090c3a36877570010b5", "department": "Crew", "gender": 0, "id": 1483222,
+"job": "CG Supervisor", "name": "Simon Clutterbuck"\}, \{"credit\_id":
+"5592b0dbc3a368774b00112c", "department": "Crew", "gender": 0, "id": 1483223,
+"job": "CG Supervisor", "name": "Graeme Demmocks"\}, \{"credit\_id":
+"5592b0fe92514152db0010c1", "department": "Crew", "gender": 0, "id": 1483224,
+"job": "CG Supervisor", "name": "Adrian Fernandes"\}, \{"credit\_id":
+"5592b11f9251415df8001059", "department": "Crew", "gender": 0, "id": 1483225,
+"job": "CG Supervisor", "name": "Mitch Gates"\}, \{"credit\_id":
+"5592b15dc3a3687745001645", "department": "Crew", "gender": 0, "id": 1483226,
+"job": "CG Supervisor", "name": "Jerry Kung"\}, \{"credit\_id":
+"5592b18e925141645a0004ae", "department": "Crew", "gender": 0, "id": 1483227,
+"job": "CG Supervisor", "name": "Andy Lomas"\}, \{"credit\_id":
+"5592b1bfc3a368775d0010e7", "department": "Crew", "gender": 0, "id": 1483228,
+"job": "CG Supervisor", "name": "Sebastian Marino"\}, \{"credit\_id":
+"5592b2049251415df8001078", "department": "Crew", "gender": 0, "id": 1483229,
+"job": "CG Supervisor", "name": "Matthias Menz"\}, \{"credit\_id":
+"5592b27b92514152d800136a", "department": "Crew", "gender": 0, "id": 1483230,
+"job": "CG Supervisor", "name": "Sergei Nevshupov"\}, \{"credit\_id":
+"5592b2c3c3a36869e800003c", "department": "Crew", "gender": 0, "id": 1483231,
+"job": "CG Supervisor", "name": "Philippe Rebours"\}, \{"credit\_id":
+"5592b317c3a36877470012af", "department": "Crew", "gender": 0, "id": 1483232,
+"job": "CG Supervisor", "name": "Michael Takarangi"\}, \{"credit\_id":
+"5592b345c3a36877470012bb", "department": "Crew", "gender": 0, "id": 1483233,
+"job": "CG Supervisor", "name": "David Weitzberg"\}, \{"credit\_id":
+"5592b37cc3a368775100113b", "department": "Crew", "gender": 0, "id": 1483234,
+"job": "CG Supervisor", "name": "Ben White"\}, \{"credit\_id":
+"573c8e2f9251413f5d000094", "department": "Crew", "gender": 1, "id": 1621932,
+"job": "Stunts", "name": "Min Windle"\}]'
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{44}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k}{def} \PY{n+nf}{fetch\PYZus{}director}\PY{p}{(}\PY{n}{obj}\PY{p}{)}\PY{p}{:}
+    \PY{n}{l}\PY{o}{=}\PY{p}{[}\PY{p}{]}
+    \PY{k}{for} \PY{n}{i} \PY{o+ow}{in} \PY{n}{ast}\PY{o}{.}\PY{n}{literal\PYZus{}eval}\PY{p}{(}\PY{n}{obj}\PY{p}{)}\PY{p}{:}
+        \PY{k}{if} \PY{n}{i}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{job}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{==}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Director}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:}
+            \PY{n}{l}\PY{o}{.}\PY{n}{append}\PY{p}{(}\PY{n}{i}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{name}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{)}
+        \PY{k}{break}
+    \PY{k}{return} \PY{n}{l}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{47}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{movie}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{crew}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{=}\PY{n}{movie}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{crew}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{.}\PY{n}{apply}\PY{p}{(}\PY{n}{fetch\PYZus{}director}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{48}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{movie}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{48}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+      movie\_id                                     title  \textbackslash{}
+0        19995                                    Avatar
+1          285  Pirates of the Caribbean: At World's End
+2       206647                                   Spectre
+3        49026                     The Dark Knight Rises
+4        49529                               John Carter
+{\ldots}        {\ldots}                                       {\ldots}
+4804      9367                               El Mariachi
+4805     72766                                 Newlyweds
+4806    231617                 Signed, Sealed, Delivered
+4807    126186                          Shanghai Calling
+4808     25975                         My Date with Drew
+
+                                               overview  \textbackslash{}
+0     In the 22nd century, a paraplegic Marine is di{\ldots}
+1     Captain Barbossa, long believed to be dead, ha{\ldots}
+2     A cryptic message from Bond’s past sends him o{\ldots}
+3     Following the death of District Attorney Harve{\ldots}
+4     John Carter is a war-weary, former military ca{\ldots}
+{\ldots}                                                 {\ldots}
+4804  El Mariachi just wants to play his guitar and {\ldots}
+4805  A newlywed couple's honeymoon is upended by th{\ldots}
+4806  "Signed, Sealed, Delivered" introduces a dedic{\ldots}
+4807  When ambitious New York attorney Sam is sent t{\ldots}
+4808  Ever since the second grade when he first saw {\ldots}
+
+                                             genres  \textbackslash{}
+0     [Action, Adventure, Fantasy, Science Fiction]
+1                      [Adventure, Fantasy, Action]
+2                        [Action, Adventure, Crime]
+3                  [Action, Crime, Drama, Thriller]
+4              [Action, Adventure, Science Fiction]
+{\ldots}                                             {\ldots}
+4804                      [Action, Crime, Thriller]
+4805                              [Comedy, Romance]
+4806             [Comedy, Drama, Romance, TV Movie]
+4807                                             []
+4808                                  [Documentary]
+
+                                               keywords  \textbackslash{}
+0     [culture clash, future, space war, space colon{\ldots}
+1     [ocean, drug abuse, exotic island, east india {\ldots}
+2     [spy, based on novel, secret agent, sequel, mi{\ldots}
+3     [dc comics, crime fighter, terrorist, secret i{\ldots}
+4     [based on novel, mars, medallion, space travel{\ldots}
+{\ldots}                                                 {\ldots}
+4804  [united states–mexico barrier, legs, arms, pap{\ldots}
+4805                                                 []
+4806  [date, love at first sight, narration, investi{\ldots}
+4807                                                 []
+4808          [obsession, camcorder, crush, dream girl]
+
+                                                   cast                crew
+0      [Sam Worthington, Zoe Saldana, Sigourney Weaver]                  []
+1         [Johnny Depp, Orlando Bloom, Keira Knightley]                  []
+2          [Daniel Craig, Christoph Waltz, Léa Seydoux]                  []
+3          [Christian Bale, Michael Caine, Gary Oldman]                  []
+4        [Taylor Kitsch, Lynn Collins, Samantha Morton]                  []
+{\ldots}                                                 {\ldots}                 {\ldots}
+4804  [Carlos Gallardo, Jaime de Hoyos, Peter Marqua{\ldots}  [Robert Rodriguez]
+4805       [Edward Burns, Kerry Bishé, Marsha Dietlein]      [Edward Burns]
+4806         [Eric Mabius, Kristin Booth, Crystal Lowe]                  []
+4807          [Daniel Henney, Eliza Coupe, Bill Paxton]       [Daniel Hsia]
+4808  [Drew Barrymore, Brian Herzlinger, Corey Feldman]                  []
+
+[4806 rows x 7 columns]
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{61}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{movie}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{overview}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{=}\PY{n}{movie}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{overview}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{.}\PY{n}{apply}\PY{p}{(}\PY{k}{lambda} \PY{n}{x}\PY{p}{:}\PY{n}{x}\PY{o}{.}\PY{n}{split}\PY{p}{(}\PY{p}{)}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{62}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{movie}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{genres}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{=}\PY{n}{movie}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{genres}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{.}\PY{n}{apply}\PY{p}{(}\PY{k}{lambda} \PY{n}{x}\PY{p}{:}\PY{p}{[}\PY{n}{i}\PY{o}{.}\PY{n}{replace}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{ }\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}\PY{k}{for} \PY{n}{i} \PY{o+ow}{in} \PY{n}{x}\PY{p}{]}\PY{p}{)}
+\PY{n}{movie}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{keywords}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{=}\PY{n}{movie}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{keywords}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{.}\PY{n}{apply}\PY{p}{(}\PY{k}{lambda} \PY{n}{x}\PY{p}{:}\PY{p}{[}\PY{n}{i}\PY{o}{.}\PY{n}{replace}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{ }\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}\PY{k}{for} \PY{n}{i} \PY{o+ow}{in} \PY{n}{x}\PY{p}{]}\PY{p}{)}
+\PY{n}{movie}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{cast}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{=}\PY{n}{movie}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{cast}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{.}\PY{n}{apply}\PY{p}{(}\PY{k}{lambda} \PY{n}{x}\PY{p}{:}\PY{p}{[}\PY{n}{i}\PY{o}{.}\PY{n}{replace}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{ }\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}\PY{k}{for} \PY{n}{i} \PY{o+ow}{in} \PY{n}{x}\PY{p}{]}\PY{p}{)}
+\PY{n}{movie}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{crew}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{=}\PY{n}{movie}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{crew}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{.}\PY{n}{apply}\PY{p}{(}\PY{k}{lambda} \PY{n}{x}\PY{p}{:}\PY{p}{[}\PY{n}{i}\PY{o}{.}\PY{n}{replace}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{ }\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}\PY{k}{for} \PY{n}{i} \PY{o+ow}{in} \PY{n}{x}\PY{p}{]}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{64}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{movie}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{tags}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{=}\PY{n}{movie}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{overview}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{+}\PY{n}{movie}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{genres}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{+}\PY{n}{movie}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{keywords}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{+}\PY{n}{movie}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{cast}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{+}\PY{n}{movie}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{crew}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{65}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+ \PY{n}{movie}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{65}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+      movie\_id                                     title  \textbackslash{}
+0        19995                                    Avatar
+1          285  Pirates of the Caribbean: At World's End
+2       206647                                   Spectre
+3        49026                     The Dark Knight Rises
+4        49529                               John Carter
+{\ldots}        {\ldots}                                       {\ldots}
+4804      9367                               El Mariachi
+4805     72766                                 Newlyweds
+4806    231617                 Signed, Sealed, Delivered
+4807    126186                          Shanghai Calling
+4808     25975                         My Date with Drew
+
+                                               overview  \textbackslash{}
+0     [In, the, 22nd, century,, a, paraplegic, Marin{\ldots}
+1     [Captain, Barbossa,, long, believed, to, be, d{\ldots}
+2     [A, cryptic, message, from, Bond’s, past, send{\ldots}
+3     [Following, the, death, of, District, Attorney{\ldots}
+4     [John, Carter, is, a, war-weary,, former, mili{\ldots}
+{\ldots}                                                 {\ldots}
+4804  [El, Mariachi, just, wants, to, play, his, gui{\ldots}
+4805  [A, newlywed, couple's, honeymoon, is, upended{\ldots}
+4806  ["Signed,, Sealed,, Delivered", introduces, a,{\ldots}
+4807  [When, ambitious, New, York, attorney, Sam, is{\ldots}
+4808  [Ever, since, the, second, grade, when, he, fi{\ldots}
+
+                                            genres  \textbackslash{}
+0     [Action, Adventure, Fantasy, ScienceFiction]
+1                     [Adventure, Fantasy, Action]
+2                       [Action, Adventure, Crime]
+3                 [Action, Crime, Drama, Thriller]
+4              [Action, Adventure, ScienceFiction]
+{\ldots}                                            {\ldots}
+4804                     [Action, Crime, Thriller]
+4805                             [Comedy, Romance]
+4806             [Comedy, Drama, Romance, TVMovie]
+4807                                            []
+4808                                 [Documentary]
+
+                                               keywords  \textbackslash{}
+0     [cultureclash, future, spacewar, spacecolony, {\ldots}
+1     [ocean, drugabuse, exoticisland, eastindiatrad{\ldots}
+2     [spy, basedonnovel, secretagent, sequel, mi6, {\ldots}
+3     [dccomics, crimefighter, terrorist, secretiden{\ldots}
+4     [basedonnovel, mars, medallion, spacetravel, p{\ldots}
+{\ldots}                                                 {\ldots}
+4804  [unitedstates–mexicobarrier, legs, arms, paper{\ldots}
+4805                                                 []
+4806  [date, loveatfirstsight, narration, investigat{\ldots}
+4807                                                 []
+4808           [obsession, camcorder, crush, dreamgirl]
+
+                                                cast               crew  \textbackslash{}
+0      [SamWorthington, ZoeSaldana, SigourneyWeaver]                 []
+1         [JohnnyDepp, OrlandoBloom, KeiraKnightley]                 []
+2          [DanielCraig, ChristophWaltz, LéaSeydoux]                 []
+3          [ChristianBale, MichaelCaine, GaryOldman]                 []
+4        [TaylorKitsch, LynnCollins, SamanthaMorton]                 []
+{\ldots}                                              {\ldots}                {\ldots}
+4804  [CarlosGallardo, JaimedeHoyos, PeterMarquardt]  [RobertRodriguez]
+4805       [EdwardBurns, KerryBishé, MarshaDietlein]      [EdwardBurns]
+4806         [EricMabius, KristinBooth, CrystalLowe]                 []
+4807          [DanielHenney, ElizaCoupe, BillPaxton]       [DanielHsia]
+4808  [DrewBarrymore, BrianHerzlinger, CoreyFeldman]                 []
+
+                                                   tags
+0     [In, the, 22nd, century,, a, paraplegic, Marin{\ldots}
+1     [Captain, Barbossa,, long, believed, to, be, d{\ldots}
+2     [A, cryptic, message, from, Bond’s, past, send{\ldots}
+3     [Following, the, death, of, District, Attorney{\ldots}
+4     [John, Carter, is, a, war-weary,, former, mili{\ldots}
+{\ldots}                                                 {\ldots}
+4804  [El, Mariachi, just, wants, to, play, his, gui{\ldots}
+4805  [A, newlywed, couple's, honeymoon, is, upended{\ldots}
+4806  ["Signed,, Sealed,, Delivered", introduces, a,{\ldots}
+4807  [When, ambitious, New, York, attorney, Sam, is{\ldots}
+4808  [Ever, since, the, second, grade, when, he, fi{\ldots}
+
+[4806 rows x 8 columns]
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{70}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{new}\PY{o}{=}\PY{n}{movie}\PY{p}{[}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{movie\PYZus{}id}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{title}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{tags}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{]}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{72}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{new}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{tags}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{=}\PY{n}{new}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{tags}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{.}\PY{n}{apply}\PY{p}{(}\PY{k}{lambda} \PY{n}{x}\PY{p}{:}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{ }\PY{l+s+s2}{\PYZdq{}}\PY{o}{.}\PY{n}{join}\PY{p}{(}\PY{n}{x}\PY{p}{)}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+C:\textbackslash{}Users\textbackslash{}DELL\textbackslash{}AppData\textbackslash{}Local\textbackslash{}Temp\textbackslash{}ipykernel\_20468\textbackslash{}2535128523.py:1:
+SettingWithCopyWarning:
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row\_indexer,col\_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-
+docs/stable/user\_guide/indexing.html\#returning-a-view-versus-a-copy
+  new['tags']=new['tags'].apply(lambda x:" ".join(x))
+    \end{Verbatim}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{84}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k+kn}{from} \PY{n+nn}{nltk}\PY{n+nn}{.}\PY{n+nn}{stem}\PY{n+nn}{.}\PY{n+nn}{porter} \PY{k+kn}{import} \PY{n}{PorterStemmer}
+\PY{n}{ps}\PY{o}{=}\PY{n}{PorterStemmer}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{87}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k}{def} \PY{n+nf}{stem}\PY{p}{(}\PY{n}{text}\PY{p}{)}\PY{p}{:}
+    \PY{n}{y}\PY{o}{=}\PY{p}{[}\PY{p}{]}
+    \PY{k}{for} \PY{n}{i} \PY{o+ow}{in} \PY{n}{text}\PY{o}{.}\PY{n}{split}\PY{p}{(}\PY{p}{)}\PY{p}{:}
+        \PY{n}{y}\PY{o}{.}\PY{n}{append}\PY{p}{(}\PY{n}{ps}\PY{o}{.}\PY{n}{stem}\PY{p}{(}\PY{n}{i}\PY{p}{)}\PY{p}{)}
+    \PY{k}{return} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{ }\PY{l+s+s2}{\PYZdq{}}\PY{o}{.}\PY{n}{join}\PY{p}{(}\PY{n}{y}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{89}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{new}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{tags}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{=}\PY{n}{new}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{tags}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{.}\PY{n}{apply}\PY{p}{(}\PY{n}{stem}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+C:\textbackslash{}Users\textbackslash{}DELL\textbackslash{}AppData\textbackslash{}Local\textbackslash{}Temp\textbackslash{}ipykernel\_20468\textbackslash{}2371542760.py:1:
+SettingWithCopyWarning:
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row\_indexer,col\_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-
+docs/stable/user\_guide/indexing.html\#returning-a-view-versus-a-copy
+  new['tags']=new['tags'].apply(stem)
+    \end{Verbatim}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{90}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{new}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{tags}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{90}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+'in the 22nd century, a parapleg marin is dispatch to the moon pandora on a
+uniqu mission, but becom torn between follow order and protect an alien
+civilization. action adventur fantasi sciencefict cultureclash futur spacewar
+spacecoloni societi spacetravel futurist romanc space alien tribe alienplanet
+cgi marin soldier battl loveaffair antiwar powerrel mindandsoul 3d
+samworthington zoesaldana sigourneyweav'
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{91}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{}countvectorizer is a tool that converts text document into a matrix }
+\PY{c+c1}{\PYZsh{}matrix has row for documnets and columns for tokens}
+\PY{k+kn}{from} \PY{n+nn}{sklearn}\PY{n+nn}{.}\PY{n+nn}{feature\PYZus{}extraction}\PY{n+nn}{.}\PY{n+nn}{text} \PY{k+kn}{import} \PY{n}{CountVectorizer}
+\PY{c+c1}{\PYZsh{}feature\PYZus{}extraction module can be used to extract features from respective ml algorithm from dataset consists text or image}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{92}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{cv}\PY{o}{=}\PY{n}{CountVectorizer}\PY{p}{(}\PY{n}{max\PYZus{}features}\PY{o}{=}\PY{l+m+mi}{5000}\PY{p}{,}\PY{n}{stop\PYZus{}words}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{english}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{100}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{vectors}\PY{o}{=}\PY{n}{cv}\PY{o}{.}\PY{n}{fit\PYZus{}transform}\PY{p}{(}\PY{n}{new}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{tags}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{)}\PY{o}{.}\PY{n}{toarray}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{101}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+ \PY{n}{vectors}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{101}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+array([[0, 0, 0, {\ldots}, 0, 0, 0],
+       [0, 0, 0, {\ldots}, 0, 0, 0],
+       [0, 0, 0, {\ldots}, 0, 0, 0],
+       {\ldots},
+       [0, 0, 0, {\ldots}, 0, 0, 0],
+       [0, 0, 0, {\ldots}, 0, 0, 0],
+       [0, 0, 0, {\ldots}, 0, 0, 0]], dtype=int64)
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{103}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k+kn}{from} \PY{n+nn}{sklearn}\PY{n+nn}{.}\PY{n+nn}{metrics}\PY{n+nn}{.}\PY{n+nn}{pairwise} \PY{k+kn}{import} \PY{n}{cosine\PYZus{}similarity}
+\PY{c+c1}{\PYZsh{}cosine similarity is measurement of  how two similar vectors are.}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{110}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{similarity}\PY{o}{=}\PY{n}{cosine\PYZus{}similarity}\PY{p}{(}\PY{n}{vectors}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{111}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{similarity}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{111}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+array([1.        , 0.08471737, 0.08740748, {\ldots}, 0.04499213, 0.        ,
+       0.        ])
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{124}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k}{def} \PY{n+nf}{recommend}\PY{p}{(}\PY{n}{movie}\PY{p}{)}\PY{p}{:}
+    \PY{n}{movie\PYZus{}index}\PY{o}{=}\PY{n}{new}\PY{p}{[}\PY{n}{new}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{title}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{==}\PY{n}{movie}\PY{p}{]}\PY{o}{.}\PY{n}{index}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}
+    \PY{n}{distance}\PY{o}{=}\PY{n}{similarity}\PY{p}{[}\PY{n}{movie\PYZus{}index}\PY{p}{]}
+    \PY{n}{movie\PYZus{}list}\PY{o}{=}\PY{n+nb}{sorted}\PY{p}{(}\PY{n+nb}{list}\PY{p}{(}\PY{n+nb}{enumerate}\PY{p}{(}\PY{n}{distance}\PY{p}{)}\PY{p}{)}\PY{p}{,}\PY{n}{reverse}\PY{o}{=}\PY{k+kc}{True}\PY{p}{,}\PY{n}{key}\PY{o}{=}\PY{k}{lambda} \PY{n}{x}\PY{p}{:}\PY{n}{x}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{]}\PY{p}{)}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{:}\PY{l+m+mi}{6}\PY{p}{]}
+    \PY{k}{for} \PY{n}{i} \PY{o+ow}{in} \PY{n}{movie\PYZus{}list}\PY{p}{:}
+        \PY{n+nb}{print}\PY{p}{(}\PY{n}{new}\PY{o}{.}\PY{n}{iloc}\PY{p}{[}\PY{n}{i}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{]}\PY{o}{.}\PY{n}{title}\PY{p}{)}
+        
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{125}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{recommend}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Avatar}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+Aliens vs Predator: Requiem
+Falcon Rising
+Independence Day
+Titan A.E.
+Aliens
+    \end{Verbatim}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{127}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k+kn}{import} \PY{n+nn}{pickle}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{131}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{pickle}\PY{o}{.}\PY{n}{dump}\PY{p}{(}\PY{n}{new}\PY{o}{.}\PY{n}{to\PYZus{}dict}\PY{p}{(}\PY{p}{)}\PY{p}{,}\PY{n+nb}{open}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{movies.dict.pkl}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{wb}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{133}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{pickle}\PY{o}{.}\PY{n}{dump}\PY{p}{(}\PY{n}{similarity}\PY{p}{,}\PY{n+nb}{open}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{similarity.pkl}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{wb}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{135}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{git} \PY{n}{remote} \PY{n}{add} \PY{n}{origin} \PY{n}{https}\PY{p}{:}\PY{o}{/}\PY{o}{/}\PY{n}{github}\PY{o}{.}\PY{n}{com}\PY{o}{/}\PY{n}{yeshraj1}\PY{o}{/}\PY{n}{machine}\PY{o}{\PYZhy{}}\PY{n}{learning}\PY{o}{.}\PY{n}{git}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}, frame=single, framerule=2mm, rulecolor=\color{outerrorbackground}]
+\textcolor{ansi-cyan-intense}{\textbf{  Cell }}\textcolor{ansi-green-intense}{\textbf{In[135], line 1}}
+\textcolor{ansi-yellow-intense}{\textbf{    git remote add origin https://github.com/yeshraj1/machine-learning.git}}
+\textcolor{ansi-white-intense}{\textbf{        \^{}}}
+\textcolor{ansi-red-intense}{\textbf{SyntaxError}}\textcolor{ansi-red-intense}{\textbf{:}} invalid syntax
+
+    \end{Verbatim}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+
+\end{Verbatim}
+\end{tcolorbox}
+
+
+    % Add a bibliography block to the postdoc
+    
+    
+    
+\end{document}
